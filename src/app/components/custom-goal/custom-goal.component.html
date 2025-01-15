@@ -1,0 +1,40 @@
+<mat-card>
+    <h2>Dodaj swój cel</h2>
+
+    <!-- Nazwa celu -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Wpisz swój cel</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="customGoal"></textarea>
+    </mat-form-field>
+
+    <!-- Nazwa miernika -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Wpisz nazwę miernika</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="customMetric"></textarea>
+    </mat-form-field>
+
+    <!-- Opis miernika -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Wpisz opis miernika (algorytm)</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="customDescription"></textarea>
+    </mat-form-field>
+
+    <!-- Planowana wartość -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Planowana wartość do osiągnięcia na koniec 2025r.</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="customPlannedValue"></textarea>
+    </mat-form-field>
+
+    <!-- Zadania -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Zadania służące realizacji celu</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="customTasks"></textarea>
+    </mat-form-field>
+
+    <!-- Przyciski -->
+    <div class="buttons">
+        <button mat-raised-button color="primary" (click)="saveCustomGoal()">Zapisz cel</button>
+        <button mat-raised-button color="warn" [routerLink]="'/goals'">Powrót</button>
+        <button mat-raised-button color="primary" [routerLink]="'/tasks'">Przejdź do tabeli</button>
+    </div>
+</mat-card>

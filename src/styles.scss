@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 20px;
+
+    h2,
+    h3 {
+        margin: 0 0 10px 0; // Dodanie odstępu poniżej tytułu
+    }
+}
+
+.department-select {
+    width: 20%; // Szerokość listy departamentów (1/5 szerokości ekranu)
+    min-width: 200px; // Minimalna szerokość
+}
+
+.goal-select {
+    width: 50%; // Szerokość listy celów (połowa szerokości ekranu)
+    min-width: 300px; // Minimalna szerokość
+}
+
+.sidebar {
+  border: 2px solid red;
+  /* Obwódka sidebaru */
+}
+
+.main-content {
+  border: 2px solid blue;
+  /* Obwódka głównej treści */
+}
+
+.container {
+  border: 2px solid green;
+  /* Obwódka kontenera */
+}

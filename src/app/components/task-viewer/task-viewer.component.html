@@ -1,0 +1,86 @@
+<mat-card>
+    <h2>Zapisane dane</h2>
+    <table mat-table [dataSource]="savedData" matSort class="mat-elevation-z8 editable-table">
+        <!-- Kolumna checkbox -->
+        <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef style="width: 50px; text-align: center;">
+                <mat-checkbox (change)="toggleSelectAll($event)" [checked]="isAllSelected()"
+                    [indeterminate]="isIndeterminate()">
+                </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let element" style="width: 50px; text-align: center; padding: 0;">
+                <mat-checkbox [(ngModel)]="element.isSelected" style="margin: 0;"></mat-checkbox>
+            </td>
+        </ng-container>
+
+
+        <!-- Kolumna Nazwa celu -->
+        <ng-container matColumnDef="goal" class="mat-column-goal">
+            <th mat-header-cell *matHeaderCellDef>Nazwa celu</th>
+            <td mat-cell *matCellDef="let element">
+                <textarea matInput rows="1" [readonly]="true" [(ngModel)]="element.goal" (dblclick)="openModal(element)"
+                    (input)="adjustTextareaHeight($event)"></textarea>
+            </td>
+        </ng-container>
+
+        <!-- Kolumna Nazwa miernika -->
+        <ng-container matColumnDef="metricName" class="mat-column-metricName">
+            <th mat-header-cell *matHeaderCellDef>Nazwa miernika</th>
+            <td mat-cell *matCellDef="let element">
+                <textarea matInput rows="1" [readonly]="true" [(ngModel)]="element.metricName" (dblclick)="openModal(element)"
+                    (input)="adjustTextareaHeight($event)"></textarea>
+            </td>
+        </ng-container>
+
+<!-- Kolumna Opis miernika -->
+<ng-container matColumnDef="metricDescription" class="mat-column-metricDescription">
+    <th mat-header-cell *matHeaderCellDef>Opis miernika</th>
+    <td mat-cell *matCellDef="let element">
+        <textarea matInput rows="1" [readonly]="true" [(ngModel)]="element.metricDescription"
+            (dblclick)="openModal(element)" (input)="adjustTextareaHeight($event)"
+            style="width: 100%; overflow: hidden; resize: none;"></textarea>
+    </td>
+</ng-container>
+
+
+        <!-- Kolumna Planowana wartość -->
+        <ng-container matColumnDef="level" class="mat-column-level">
+            <th mat-header-cell *matHeaderCellDef>Planowana wartość</th>
+            <td mat-cell *matCellDef="let element">
+                <textarea matInput rows="1" [readonly]="true" [(ngModel)]="element.level"
+                    (dblclick)="openModal(element)" (input)="adjustTextareaHeight($event)"></textarea>
+            </td>
+        </ng-container>
+
+        <!-- Kolumna Zadania -->
+        <ng-container matColumnDef="tasks" class="mat-column-tasks">
+            <th mat-header-cell *matHeaderCellDef>Zadania słuzace realizacji celu</th>
+            <td mat-cell *matCellDef="let element">
+                <textarea matInput rows="3" [readonly]="true" [(ngModel)]="element.tasks"
+                    (dblclick)="openModal(element)" (input)="adjustTextareaHeight($event)"></textarea>
+            </td>
+        </ng-container>
+
+        <!-- Kolumna Departament -->
+        <ng-container matColumnDef="department" class="mat-column-department">
+            <th mat-header-cell *matHeaderCellDef>Departament</th>
+            <td mat-cell *matCellDef="let element">
+                <input matInput [readonly]="true" [(ngModel)]="element.department" (dblclick)="openModal(element)" />
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.selected-row]="row === selectedRow"
+            (click)="selectRow(row)">
+        </tr>
+
+    </table>
+
+  <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+<!-- Przyciski nawigacyjne -->
+<div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+    <button mat-raised-button color="warn" (click)="removeSelectedRow()">Usuń cel</button>
+    <button class="custom-button" (click)="goBack()">Powrót</button>
+</div>
+</mat-card>

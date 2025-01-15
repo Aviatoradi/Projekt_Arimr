@@ -1,0 +1,99 @@
+/* Styl dla tabeli */
+table {
+    width: 100%;
+    /* Tabela zajmuje całą szerokość */
+    table-layout: fixed;
+    /* Stałe szerokości kolumn */
+    border-collapse: collapse;
+    /* Usuwa odstępy między komórkami */
+}
+
+/* Komórki tabeli */
+.mat-cell,
+.mat-header-cell {
+    white-space: pre-wrap;
+    /* Zachowuje nowe linie */
+    word-wrap: break-word;
+    /* Zawijanie tekstu */
+    overflow: visible;
+    /* Widoczna zawartość */
+    height: auto;
+    /* Dynamiczna wysokość komórki */
+    padding: 4px 8px;
+        /* Zmniejsz odstępy pionowe i poziome */
+}
+
+/* Kolumny o szerokości 350px */
+.mat-column-goal,
+.mat-column-metricName,
+.mat-column-metricDescription,
+.mat-column-tasks {
+    width: 250px;
+}
+
+.selected-row {
+    background-color: #f5f5f5;
+    /* Kolor tła dla zaznaczonego wiersza */
+    transition: background-color 0.2s;
+    /* Płynna zmiana koloru */
+}
+/* Kolumna o szerokości 100px */
+
+.mat-column-level,
+.mat-column-department {
+    width: 100px;
+    white-space: pre-wrap;
+    /* Zawijanie tekstu */
+    overflow: hidden;
+    /* Ukrycie tekstu wykraczającego poza komórkę */
+    text-overflow: ellipsis;
+    /* Dodaje "..." dla bardzo długiego tekstu */
+}
+
+/* Dynamiczne dostosowanie wysokości textarea */
+textarea {
+    width: 100%;
+    /* Szerokość pola */
+    resize: none;
+    /* Wyłącz ręczne zmienianie rozmiaru */
+    white-space: pre-wrap;
+    /* Zachowuje białe znaki i nowe linie */
+    word-wrap: break-word;
+    /* Zawijanie tekstu */
+    height: auto;
+    /* Dynamiczne dopasowanie wysokości */
+    overflow: hidden;
+    /* Ukrycie przewijania pionowego */
+    line-height: 1.5;
+    /* Wysokość wiersza */
+    font-size: 14px;
+    /* Rozmiar tekstu */
+}
+
+/* Wiersze tabeli */
+.mat-row {
+    height: auto;
+    /* Dynamiczna wysokość wierszy tabeli */
+}
+.mat-header-row {
+    height: auto;
+}
+
+/* Styl dla przycisków */
+.custom-button {
+    background-color: #f9f9f9;
+    color: #1a73e8;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-button:hover {
+    background-color: #e8f0fe;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}

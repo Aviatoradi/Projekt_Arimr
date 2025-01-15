@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Edytuj szczegóły</h2>
+<mat-dialog-content>
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Nazwa celu</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="data.goal"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Nazwa i sposób obliczenia miernika (algorytm)</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="data.metricName"></textarea>
+    </mat-form-field>
+
+<mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Opis miernika (algorytm)</mat-label>
+    <textarea matInput rows="3" [(ngModel)]="data.metricDescription"></textarea>
+</mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Planowana wartość do osiągnięcia do końca 2025r.</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="data.level"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Zadania słuzące realizacji celu</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="data.tasks"></textarea>
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="close()">Anuluj</button>
+    <button mat-raised-button color="primary" (click)="save()">Zapisz</button>
+</mat-dialog-actions>
