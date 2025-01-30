@@ -35,11 +35,17 @@ export class TaskViewComponent implements OnInit{
   constructor(public dataService: DataService, private dialog: MatDialog, private location: Location) { }
   
   // Inicjalizacja danych w ngOnInit
+  // ngOnInit(): void {
+  //   this.savedData = this.dataService.savedData; // Przypisanie danych z DataService
+  //   this.selectedDepartment = this.dataService.selectedDepartment; // Pobierz wybrany departament
+  //   this.selectedGoals = this.dataService.selectedGoals; // Pobierz wybrany cel, jeśli istnieje
+  // }
+
   ngOnInit(): void {
-    this.savedData = this.dataService.savedData; // Przypisanie danych z DataService
-    this.selectedDepartment = this.dataService.selectedDepartment; // Pobierz wybrany departament
+  this.savedData = this.dataService.savedData;
+    this.selectedDepartment = this.dataService.getSelectedDepartment();
     this.selectedGoals = this.dataService.selectedGoals; // Pobierz wybrany cel, jeśli istnieje
-  }
+}
 
 
   goBack(): void {

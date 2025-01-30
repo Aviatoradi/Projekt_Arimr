@@ -10,7 +10,17 @@ export class DataService {
   savedData: any[] = []; // Zapisane dane
   
 
+  constructor() { }
   
+  // Metoda do ustawiania wybranego departamentu
+  setSelectedDepartment(department: { name: string }) {
+    this.selectedDepartment = department;
+  }
+
+  getSelectedDepartment(): { name: string } | null {
+  return this.selectedDepartment;
+}
+
     // Lista wspólnych zadań dla różnych celów
   wspolneZadania1 = [
         'Opiniowanie legislacji.\n',
@@ -373,5 +383,6 @@ export class DataService {
 
   ];
 
-  constructor() {}
+
 }
+

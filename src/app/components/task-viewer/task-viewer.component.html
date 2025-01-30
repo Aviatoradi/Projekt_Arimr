@@ -80,7 +80,8 @@
 
 <!-- Przyciski nawigacyjne -->
 <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
-    <button mat-raised-button color="warn" (click)="removeSelectedRow()">Usuń cel</button>
+    <button class="custom-button" color="accent" (click)="removeSelectedRow()">Usuń cel</button>
     <button class="custom-button" (click)="goBack()">Powrót</button>
+    <!--<button (click)="exportToExcel()">Eksportuj do Excela</button> -->
 </div>
 </mat-card>

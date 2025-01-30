@@ -16,6 +16,30 @@ mat-form-field textarea {
     width: 100%;
     /* Rozciągnięcie mat-form-field na pełną szerokość rodzica */
 }
+/* Styl dla przycisków */
+.custom-button {
+    background-color: #f9f9f9;
+    color: #1a73e8;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.new-task-container {
+    width: 50%;
+    /* Ustawienie szerokości na połowę strony */
+    min-width: 400px;
+    /* Opcjonalne ograniczenie minimalnej szerokości */
+}
+
+.new-task-input {
+    width: 100%;
+    /* Input zajmuje całą szerokość kontenera */
+}
 
 .footer {
 text-align: center;
@@ -31,12 +55,9 @@ text-align: center;
     bottom: 0;
     /* Przymocuj do dolnej krawędzi */
 }
-.container {
-    flex: 1;
-    /* Zajmuje dostępne miejsce powyżej stopki */
-}
 
 .container {
+    flex: 1;
     margin: 0;
     padding: 0;
     width: 100%;
