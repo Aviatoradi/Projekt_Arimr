@@ -6,12 +6,8 @@ import { saveAs } from 'file-saver';
   providedIn: 'root',
 })
 export class ExportService {
-
-
-  
   exportToExcel(data: any[]): void {
-    console.log('🔹 Eksportowanie danych:', data); // Sprawdzenie w konsoli, czy metoda się uruchamia
-
+    console.log('🔹 Eksportowanie danych:', data);
 
     // Nagłówki arkusza
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([
@@ -20,14 +16,28 @@ export class ExportService {
     ]);
 
     // Wstawianie danych do arkusza
-    const formattedData = data.map((item, index) => [
-      index + 1, // Lp.
-      item.goal, // Cel
-      `${item.metricName}\n${item.metricDescription}`, // Nazwa i opis miernika (zawijanie tekstu)
-      item.plannedValue, // Planowana wartość
-      item.tasks && Array.isArray(item.tasks) ? item.tasks.join('\n• ') : 'Brak zadań', // Pobieranie zadań, oddzielone punktorami
-      item.department, // Komórka której dotyczy miernik
-    ]);
+    const formattedData = data.map((item: any, index: number) => {
+      console.log(`🛠 Sprawdzam tasks dla celu: ${item.goal}`, item.tasks);
+
+      // Formatowanie `tasks`
+      let formattedTasks = 'Brak zadań';
+      if (item.tasks) {
+        if (Array.isArray(item.tasks)) {
+          formattedTasks = item.tasks.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n');
+        } else if (typeof item.tasks === 'string' && item.tasks.trim() !== '') {
+          formattedTasks = item.tasks;
+        }
+      }
+
+      return [
+        index + 1, // Lp.
+        item.goal, // Cel
+        `${item.metricName}\n${item.metricDescription}`, // Nazwa i opis miernika
+        item.plannedValue, // Planowana wartość
+        formattedTasks, // Zadania
+        item.department, // Komórka której dotyczy miernik
+      ];
+    });
 
     XLSX.utils.sheet_add_aoa(ws, formattedData, { origin: -1 });
 
@@ -37,7 +47,7 @@ export class ExportService {
       { s: { r: 1, c: 2 }, e: { r: 1, c: 3 } }, // Scalanie "Nazwa miernika"
     ];
 
-    // Ustawienia szerokości kolumn (dopasowane do struktury)
+    // Ustawienia szerokości kolumn
     ws['!cols'] = [
       { wch: 5 },  // Lp.
       { wch: 40 }, // Cel
@@ -46,19 +56,6 @@ export class ExportService {
       { wch: 60 }, // Zadania
       { wch: 10 }, // Komórka
     ];
-
-    // Formatowanie wierszy dla lepszej czytelności (zawijanie tekstu w odpowiednich kolumnach)
-    const range = XLSX.utils.decode_range(ws['!ref']!);
-    for (let row = range.s.r + 2; row <= range.e.r; row++) {
-      ['B', 'C', 'D', 'E'].forEach((col) => {
-        const cellAddress = `${col}${row + 1}`;
-        if (ws[cellAddress]) {
-          ws[cellAddress].s = {
-            alignment: { wrapText: true, vertical: 'top' },
-          };
-        }
-      });
-    }
 
     // Tworzenie pliku Excela
     const wb: XLSX.WorkBook = XLSX.utils.book_new();

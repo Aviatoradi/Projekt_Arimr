@@ -92,3 +92,21 @@ text-align: center;
     border: 2px solid #1976d2;
     box-shadow: 0 6px 15px rgba(25, 118, 210, 0.5);
 }
+
+.new-task-container {
+    width: 50vw !important;
+    min-width: 400px !important;
+    max-width: 600px !important;
+    display: block !important;
+}
+
+.new-task-input {
+    width: 100%;
+    /* Pole zajmuje całą szerokość kontenera */
+    height: auto;
+    /* Automatyczna wysokość */
+    min-height: 80px;
+    /* Minimalna wysokość */
+    font-size: 14px;
+    /* Dopasowanie czcionki */
+}

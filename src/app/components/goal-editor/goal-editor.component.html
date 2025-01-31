@@ -66,8 +66,8 @@
 </div>
 
 <!-- Dodawanie nowego zadania -->
-<div *ngIf="selectedGoal">
-  <mat-form-field appearance="fill">
+<div *ngIf="selectedGoal" class="new-task-container">
+  <mat-form-field appearance="fill" class="new-task-input">
     <mat-label>Nowe zadanie</mat-label>
     <textarea matInput [(ngModel)]="customTask" placeholder="Wprowadź nowe zadanie"></textarea>
   </mat-form-field>

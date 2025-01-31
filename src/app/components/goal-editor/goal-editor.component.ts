@@ -48,7 +48,8 @@ export class GoalEditorComponent {
   constructor(public exportService: ExportService, public dataService: DataService, private snackBar: MatSnackBar) { }
 
 exportToExcel(): void {
-  console.log('🔹 Eksportowanie danych:', this.dataService.savedData);
+    console.log('🔹 Eksportowanie danych:', this.dataService.savedData);
+  this.exportService.exportToExcel(this.dataService.savedData);
 
   const formattedData = this.dataService.savedData.map((item, index) => ({
     goal: item.goal || 'Brak celu',
@@ -58,7 +59,7 @@ exportToExcel(): void {
     tasks: typeof item.tasks === 'string' && item.tasks.trim() !== ''
       ? item.tasks  // ✅ Jeśli `tasks` to string, zapisujemy go normalnie
       : Array.isArray(item.tasks) && item.tasks.length > 0
-        ? item.tasks.join('\n')  // ✅ Jeśli `tasks` to tablica, zamieniamy na string
+        ? item.tasks.join(',')  // ✅ Jeśli `tasks` to tablica, zamieniamy na string
         : 'Brak zadań',
     department: item.department || '',
   }));
@@ -177,6 +178,9 @@ saveData() {
   console.log('Selected Department:', this.selectedDepartment);
   console.log('Selected Goal:', this.selectedGoal);
   console.log('Tasks before saving:', this.selectedGoal?.tasks);
+  console.log('Czy tasks są poprawne?', JSON.stringify(this.dataService.savedData, null, 2));
+  console.log('🔍 Sprawdzenie danych przed eksportem:', JSON.stringify(this.dataService.savedData, null, 2));
+
 
   if (this.selectedDepartment && this.selectedGoal && this.selectedGoal.metric?.level?.trim()) {
     const savedEntry = {
