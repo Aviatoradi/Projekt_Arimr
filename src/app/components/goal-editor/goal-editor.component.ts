@@ -53,23 +53,23 @@ export class GoalEditorComponent {
   }
 
   selectGoal(goal: any) {
-  this.selectedGoal = goal;
+    this.selectedGoal = goal;
 
-  if (this.selectedGoal.metrics && this.selectedGoal.metrics.length > 0) {
-    this.selectedGoal.metric = this.selectedGoal.metrics[0];
+    if (this.selectedGoal.metrics && this.selectedGoal.metrics.length > 0) {
+      this.selectedGoal.metric = this.selectedGoal.metrics[0];
 
-    // ✅ Jeśli level (planowana wartość) jest puste, ustaw domyślną wartość
-    if (!this.selectedGoal.metric.level) {
-      this.selectedGoal.metric.level = ''; 
+      // ✅ Jeśli level (planowana wartość) jest puste, ustaw domyślną wartość
+      if (!this.selectedGoal.metric.level) {
+        this.selectedGoal.metric.level = ''; 
+      }
+    } else {
+      this.selectedGoal.metric = { name: '', description: '', level: '' };
     }
-  } else {
-    this.selectedGoal.metric = { name: '', description: '', level: '' };
-  }
 
-  console.log('🔹 Wybrany cel:', this.selectedGoal);
-  console.log('🔹 Wybrany miernik:', this.selectedGoal.metric);
-  console.log('🔹 Planowana wartość:', this.selectedGoal.metric.level);
-}
+    console.log('🔹 Wybrany cel:', this.selectedGoal);
+    console.log('🔹 Wybrany miernik:', this.selectedGoal.metric);
+    console.log('🔹 Planowana wartość:', this.selectedGoal.metric.level);
+  }
 
   addTask(task: string) {
     if (task.trim() && this.selectedGoal) {
@@ -120,7 +120,7 @@ export class GoalEditorComponent {
       goal: this.selectedGoal.name,
       metricName: this.selectedGoal.metric.name,
       metricDescription: this.selectedGoal.metric.description || 'Brak opisu',
-      level: this.selectedGoal.metric.level.trim(), // ✅ Upewniamy się, że level jest zapisane!
+      level: this.selectedGoal.metric.level.trim(),
       tasks: Array.isArray(this.selectedGoal.tasks) && this.selectedGoal.tasks.length > 0
         ? this.selectedGoal.tasks.join('\n')
         : 'Brak zadań',
