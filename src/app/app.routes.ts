@@ -6,17 +6,21 @@ import { CustomGoalComponent } from '/Users/adrianchlebio/Projekt/src/app/compon
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ProfileComponent } from './profile/profile.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from '/Users/adrianchlebio/Projekt/src/app/services/auth.guard';
+import { AuthService } from './services/auth.service';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'goals', pathMatch: 'full' },
+
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // ✅ Domyślnie przekierowuje na logowanie
+  { path: 'login', component: LoginComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] }, // ✅ Po zalogowaniu dostępne
   { path: 'goals', component: GoalEditorComponent },
-  { path: 'tasks', component: TaskViewComponent },
-  { path: 'custom-goal', component: CustomGoalComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'settings', component: SettingsComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'tasks', component: TaskViewComponent, canActivate: [AuthGuard] },
+  { path: 'custom-goal', component: CustomGoalComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({
