@@ -8,6 +8,7 @@ export class DataService {
   selectedGoals: any[] = []; // Cele wybranego departamentu
   selectedGoal: any = null; // Pojedynczy wybrany cel
   savedData: any[] = []; // Zapisane dane
+  goalTypes: string[] = ['Centralne cele operacyjne', 'Cele logistyczne', 'Cele planu działalności ministra'];
   
 
   constructor() { }
@@ -17,6 +18,12 @@ export class DataService {
     this.selectedDepartment = department;
   }
 
+  // Metoda zwracająca cele danej grupy dla wybranego departamentu
+  getGoalsByType(departmentName: string, goalType: string): any[] {
+    const department = this.departments.find(dep => dep.name === departmentName);
+    return department ? department.goals.filter(goal => goal.goalType === goalType) : [];
+  }
+  
   getSelectedDepartment(): { name: string } | null {
   return this.selectedDepartment;
 }
@@ -48,6 +55,7 @@ export class DataService {
       goals: [
         {
           name: 'Zapewnienie skutecznej obsługi wniosków o pomoc w ramach płatności obszarowych (PROW 2014-2020 i PS WPR 2023-2027)',
+          goalType: 'Centralne cele operacyjne',
           metrics: [
             {
               name: 'Planowana na dany rok kalendarzowy liczba rozpatrzonych wniosków o przyznanie płatności obszarowych PROW* (% spraw z  wydaną decyzją).',
@@ -59,6 +67,7 @@ export class DataService {
         },
         {
           name: 'Zapewnienie skutecznej obsługi wniosków o pomoc w ramach PS WPR 2023-2027',
+          goalType: 'Centralne cele operacyjne',
           metrics: [
             {
               name: 'Poziom wniosków rozpatrzonych (pozytywnie i negatywnie) (%:)',
@@ -70,6 +79,7 @@ export class DataService {
         },
         {
           name: ' Zapewnienie realizacji płatności w ramach płatności obszarowych  (PROW 2014-2020, PS WPR 2023-2027)',
+       // goalType: 'Centralne cele operacyjne',
           metrics: [
             {
               name: 'Poziom zrealizowanych płatności obszarowych PROW* na dany rok kalendarzowy (% spraw ze zrealizowaną płatnością).',
@@ -292,7 +302,8 @@ export class DataService {
       goals: [
         
         {
-        name: 'Zapewnienie skutecznej obsługi wniosków o pomoc  w ramach  POMOCY KRAJOWEJ ',
+          name: 'Zapewnienie skutecznej obsługi wniosków o pomoc  w ramach  POMOCY KRAJOWEJ ',
+          goalType: 'Centralne cele operacyjne',
           metrics: [
             {
               name: 'Poziom wniosków rozpatrzonych (pozytywnie i negatywnie) (%:).',
@@ -304,7 +315,8 @@ export class DataService {
         },
 
         {
-        name: 'Zapewnienie realizacji płatności w ramach POMOCY KRAJOWEJ',
+          name: 'Zapewnienie realizacji płatności w ramach POMOCY KRAJOWEJ',
+          goalType: 'Centralne cele operacyjne',
           metrics: [
             {
               name: 'Poziom zrealizowanych płatności na dany rok kalendarzowy (%)',
@@ -354,9 +366,42 @@ export class DataService {
     {
       name: 'DWR',
       goals: [
+      
+      {
+          name: 'Wzmocnienie bezpieczeństwa żywnościowego i odporności na kryzysy',
+          goalType: 'Cele planu działalności ministra',
+          metrics: [
+            {
+              name: 'Liczba zawartych umów w ramach Programu Fundusze Europejskie dla Rybactwa na lata 2021-2027 w ramach działania 2.2 Inwestycje i innowacje w akwakulturze (2.2.2).',
+              description: 'Opis: Liczba zawartych umów.', level: ''
+            },
+          ],
+          tasks: [
+            '1. Weryfikacja wniosków.',
+            '2. Podpisanie umów o przyznanie pomocy.',
+          ],
+        },
+
+        {
+          name: 'Poprawa jakości życia, infrastruktury i stanu środowiska',
+          goalType: 'Cele planu działalności ministra',
+          metrics: [
+            {
+              name: 'Liczba zawartych umów w ramach Programu Fundusze Europejskie dla Rybactwa na lata 2021-2027 w ramach działania 1.11 Ochrona środowiska naturalnego i zmniejszenie wpływu działalności rybackiej na środowisko.',
+              description: '', level: ''
+            },
+          ],
+          tasks: [
+            '1. Uruchomienie naboru.',
+            '2. Rejestracja wniosków.',
+            '3. Weryfikacja wniosków.',
+            '4. Podpisanie umowy o przyznanie pomocy.'
+          ],
+        },
         
         {
           name: 'Zapewnienie skutecznej obsługi wniosków o pomoc w ramach FER 2021-2027 ',
+          goalType: 'Centralne cele operacyjne',
           metrics: [
             {
               name: 'Poziom wniosków rozpatrzonych (pozytywnie i negatywnie) (%):',
@@ -369,6 +414,7 @@ export class DataService {
 
         {
           name: 'Zapewnienie realizacji płatności w ramach FER 2021-2027',
+          goalType: 'Centralne cele operacyjne',
           metrics: [
             {
               name: 'Poziom zrealizowanych płatności na dany rok kalendarzowy (%).',
@@ -378,6 +424,21 @@ export class DataService {
           tasks: [...this.wspolneZadania2
           ],
         },
+
+        {
+          name: 'test celów logistycznych dla DWR',
+          goalType: 'Cele logistyczne',
+          metrics: [
+            {
+              name: 'Testowy cel logistyczny',
+              description: 'Testowy opis dla DWR', level: ''
+            },
+          ],
+          tasks: ['1. Testowe zadanie dla DWR',
+                  '2. Testowe zadanie dla DWR'
+          ],
+        },
+
       ],
     }
 

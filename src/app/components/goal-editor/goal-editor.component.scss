@@ -1,112 +1,33 @@
-mat-form-field textarea {
-    resize: both;
-    /* Pozwala na zmianę rozmiaru w pionie i poziomie */
-    overflow: auto;
-    /* Dodanie przewijania w razie potrzeby */
-    max-width: 100%;
-    /* Maksymalna szerokość ograniczona przez kontener */
-    min-width: 600px;
-    /* Minimalna szerokość */
-    min-height: 50px;
-    /* Minimalna wysokość */
-    font-size: 10px;
-        /* Większy tekst dla lepszej czytelności */
-}
-.auto-resize {
-    width: 100%;
-    /* Rozciągnięcie mat-form-field na pełną szerokość rodzica */
-}
-/* Styl dla przycisków */
-.custom-button {
-    background-color: #f9f9f9;
-    color: #1a73e8;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
 .new-task-container {
-    width: 50%;
-    /* Ustawienie szerokości na połowę strony */
-    min-width: 400px;
-    /* Opcjonalne ograniczenie minimalnej szerokości */
+    width: 100%;
+    /* Pełna szerokość kontenera */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Odstęp między polami */
+    margin-top: 15px;
 }
 
 .new-task-input {
-    width: 100%;
-    /* Input zajmuje całą szerokość kontenera */
-}
-
-.footer {
-text-align: center;
-    /* Wyśrodkuj przyciski */
-    padding: 10px 0;
-    /* Odstępy dla lepszej czytelności */
-    background-color: #f9f9f9;
-    /* Opcjonalne tło stopki */
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    /* Subtelny cień */
-    position: sticky;
-    /* Stopka zawsze widoczna na dole */
-    bottom: 0;
-    /* Przymocuj do dolnej krawędzi */
-}
-
-.container {
-    flex: 1;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-/* Kafelki departamentów */
-.departments-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    padding: 20px;
-}
-
-.department-tile {
-    cursor: pointer;
-    padding: 20px;
-    text-align: center;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, #e0e0e0, #ffffff);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.department-tile:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-}
-
-.department-tile.selected {
-    border: 2px solid #1976d2;
-    box-shadow: 0 6px 15px rgba(25, 118, 210, 0.5);
-}
-
-.new-task-container {
+    flex-grow: 1;
+    /* Automatyczne dopasowanie szerokości */
     width: 50vw !important;
-    min-width: 400px !important;
-    max-width: 600px !important;
-    display: block !important;
+    /* Pole zajmuje połowę ekranu */
+    min-width: 500px !important;
+    /* Minimalna szerokość */
+    max-width: 700px !important;
+    /* Maksymalna szerokość */
 }
 
-.new-task-input {
-    width: 100%;
-    /* Pole zajmuje całą szerokość kontenera */
-    height: auto;
-    /* Automatyczna wysokość */
-    min-height: 80px;
-    /* Minimalna wysokość */
+.new-task-input textarea {
+    width: 100% !important;
+    min-height: 50px;
     font-size: 14px;
-    /* Dopasowanie czcionki */
+}
+
+.new-task-container button {
+    height: 48px;
+    /* Dostosowanie wysokości do pola */
+    white-space: nowrap;
+    /* Zapobiega zawijaniu tekstu */
 }

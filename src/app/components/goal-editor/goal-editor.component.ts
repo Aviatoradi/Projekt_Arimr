@@ -16,8 +16,6 @@ import { MatListModule } from '@angular/material/list';
 import { ExportService } from '../../services/export.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-
-
 @Component({
   selector: 'app-goal-editor',
   standalone: true,
@@ -40,172 +38,112 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class GoalEditorComponent {
   selectedDepartment: any = null;
   selectedGoal: any = null;
-  customMetric: string = ''; // Przechowuje nazwę miernika dla aktualnie wybranego celu
-  customDescription: string = ''; // Przechowuje opis miernika dla aktualnie wybranego celu
-  customTask: string = '';  // Przechowuje nowe zadanie
+  customTask: string = '';
 
-
-  constructor(public exportService: ExportService, public dataService: DataService, private snackBar: MatSnackBar) { }
-
-exportToExcel(): void {
-    console.log('🔹 Eksportowanie danych:', this.dataService.savedData);
-  this.exportService.exportToExcel(this.dataService.savedData);
-
-  const formattedData = this.dataService.savedData.map((item, index) => ({
-    goal: item.goal || 'Brak celu',
-    metricName: item.metricName || 'Brak miernika',
-    metricDescription: item.metricDescription || '',
-    plannedValue: item.plannedValue || '',
-    tasks: typeof item.tasks === 'string' && item.tasks.trim() !== ''
-      ? item.tasks  // ✅ Jeśli `tasks` to string, zapisujemy go normalnie
-      : Array.isArray(item.tasks) && item.tasks.length > 0
-        ? item.tasks.join(',')  // ✅ Jeśli `tasks` to tablica, zamieniamy na string
-        : 'Brak zadań',
-    department: item.department || '',
-  }));
-
-  console.log('✅ Sformatowane dane do eksportu:', formattedData);
-
-  this.exportService.exportToExcel(formattedData);
-}
-
-
-
+  constructor(public exportService: ExportService, public dataService: DataService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
-  // Przywrócenie wybranego departamentu po przejściu do innej zakładki
-  this.selectedDepartment = this.dataService.getSelectedDepartment();
-}
+    this.selectedDepartment = this.dataService.getSelectedDepartment();
+  }
 
-    addCustomGoal() {
-    if (!this.selectedDepartment) {
-      alert('Wybierz departament przed dodaniem celu!');
-      return;
-    }
-    }
-  
   selectDepartment(department: any): void {
     this.selectedDepartment = department;
-    this.dataService.selectedDepartment = department; // Zapisanie do DataService
-    this.selectedGoal = null; // Resetowanie celu
+    this.dataService.selectedDepartment = department;
+    this.selectedGoal = null;
   }
 
-  
-selectGoal(goal: any) {
+  selectGoal(goal: any) {
   this.selectedGoal = goal;
 
-  // Sprawdź, czy cel ma listę metrics, i przypisz pierwszy metric, jeśli istnieje
   if (this.selectedGoal.metrics && this.selectedGoal.metrics.length > 0) {
-    this.selectedGoal.metric = this.selectedGoal.metrics[0]; // Pobiera pierwszy miernik z listy
+    this.selectedGoal.metric = this.selectedGoal.metrics[0];
+
+    // ✅ Jeśli level (planowana wartość) jest puste, ustaw domyślną wartość
+    if (!this.selectedGoal.metric.level) {
+      this.selectedGoal.metric.level = ''; 
+    }
   } else {
-    this.selectedGoal.metric = { name: '', description: '', level: '' }; // Domyślny metric
+    this.selectedGoal.metric = { name: '', description: '', level: '' };
   }
 
-  // Aktualizuj `customMetric` i `customDescription`
-  this.customMetric = this.selectedGoal.metric.name || '';
-  this.customDescription = this.selectedGoal.metric.description || '';
-
-  // Automatyczna aktualizacja numeracji zadań po załadowaniu celu
-  this.updateTaskNumbers();
-
-  console.log('Wybrany cel:', this.selectedGoal);
-  console.log('Wybrany miernik:', this.selectedGoal.metric);
+  console.log('🔹 Wybrany cel:', this.selectedGoal);
+  console.log('🔹 Wybrany miernik:', this.selectedGoal.metric);
+  console.log('🔹 Planowana wartość:', this.selectedGoal.metric.level);
 }
 
-  
   addTask(task: string) {
-  if (task.trim() && this.selectedGoal) {
-    if (!this.selectedGoal.tasks) {
-      this.selectedGoal.tasks = []; // Inicjalizacja, jeśli tasks jest puste
+    if (task.trim() && this.selectedGoal) {
+      if (!this.selectedGoal.tasks) {
+        this.selectedGoal.tasks = [];
+      }
+      const cleanedTask = task.trim().replace(/\n/g, '');
+      const taskNumber = this.selectedGoal.tasks.length + 1;
+      this.selectedGoal.tasks.push(`${taskNumber}. ${cleanedTask}`);
+      this.updateTaskNumbers();
     }
-
-    const cleanedTask = task.trim().replace(/\n/g, ''); // Usuń nowe linie
-    const taskNumber = this.selectedGoal.tasks.length + 1; // Nowy numer
-    this.selectedGoal.tasks.push(`${taskNumber}. ${cleanedTask}`); // Dodajemy z numerem
-    this.updateTaskNumbers(); // Aktualizacja numeracji
-    console.log('Dodano zadanie:', cleanedTask);
-  }
-    // Resetowanie pola tekstowego
     this.customTask = '';
-}
+  }
 
-
-
-  addMetric() {
+  removeTask(index: number) {
     if (this.selectedGoal) {
-      this.selectedGoal.metrics.push({ name: '', description: '', level: '' });
+      this.selectedGoal.tasks.splice(index, 1);
+      this.updateTaskNumbers();
     }
   }
 
-
-  removeMetric(index: number) {
-    if (this.selectedGoal) {
-      this.selectedGoal.metrics.splice(index, 1);
+  updateTaskNumbers(): void {
+    if (this.selectedGoal?.tasks) {
+      this.selectedGoal.tasks = this.selectedGoal.tasks.map(
+        (task: string, index: number) => `${index + 1}. ${task.replace(/^\d+\.\s*/, '').trim().replace(/\n/g, '')}`
+      );
     }
-  }
-  autoResize(textarea: HTMLTextAreaElement): void {
-    textarea.style.height = 'auto'; // Resetuj wysokość
-    textarea.style.height = textarea.scrollHeight + 'px'; // Dopasuj wysokość do zawartości
-    
   }
 
   saveLevel(level: string) {
-    if (this.selectedGoal && this.selectedGoal.metric) {
-      console.log('Zapisuję poziom:', level);
-      this.selectedGoal.metric.level = level.trim();
-    }
-  }
+  if (this.selectedGoal && this.selectedGoal.metric) {
+    console.log('📌 Zapisuję poziom:', level);
+    this.selectedGoal.metric.level = level.trim(); // ✅ Naprawione!
 
-
-  removeTask(index: number) {
-  if (this.selectedGoal) {
-    this.selectedGoal.tasks.splice(index, 1); // Usuń zadanie
-    this.updateTaskNumbers(); // Zaktualizuj numerację
-  }
-}
-updateTaskNumbers(): void {
-  if (this.selectedGoal?.tasks) {
-    this.selectedGoal.tasks = this.selectedGoal.tasks.map(
-      (task: string, index: number) =>
-        `${index + 1}. ${task.replace(/^\d+\.\s*/, '').trim().replace(/\n/g, '')}` // Usuń istniejącą numerację i nowe linie
+    // ✅ Upewniamy się, że zmiana pojawi się w tabeli
+    this.dataService.savedData = this.dataService.savedData.map(entry =>
+      entry.goal === this.selectedGoal.name ? { ...entry, level: level.trim() } : entry
     );
   }
 }
 
 
-
-saveData() {
-  console.log('Selected Department:', this.selectedDepartment);
-  console.log('Selected Goal:', this.selectedGoal);
-  console.log('Tasks before saving:', this.selectedGoal?.tasks);
-  console.log('Czy tasks są poprawne?', JSON.stringify(this.dataService.savedData, null, 2));
-  console.log('🔍 Sprawdzenie danych przed eksportem:', JSON.stringify(this.dataService.savedData, null, 2));
-
+  saveData() {
+  console.log('🔍 Dane przed zapisem:', this.selectedGoal);
 
   if (this.selectedDepartment && this.selectedGoal && this.selectedGoal.metric?.level?.trim()) {
     const savedEntry = {
       goal: this.selectedGoal.name,
       metricName: this.selectedGoal.metric.name,
       metricDescription: this.selectedGoal.metric.description || 'Brak opisu',
-      level: this.selectedGoal.metric.level.trim(),
+      level: this.selectedGoal.metric.level.trim(), // ✅ Upewniamy się, że level jest zapisane!
       tasks: Array.isArray(this.selectedGoal.tasks) && this.selectedGoal.tasks.length > 0
-        ? this.selectedGoal.tasks.join('\n')  // ✅ Łączymy zadania w jeden string z nowymi liniami
-        : 'Brak zadań', 
+        ? this.selectedGoal.tasks.join('\n')
+        : 'Brak zadań',
       department: this.selectedDepartment.name,
     };
 
     this.dataService.savedData.push(savedEntry);
-    console.log('✅ Dane zapisane:', savedEntry); // Debugging
+    console.log('✅ Dane zapisane:', savedEntry);
     this.selectedGoal = null;
     alert('Dane zapisane pomyślnie!');
   } else {
     let errorMessage = 'Wprowadź wymagane dane przed zapisaniem!\n';
     if (!this.selectedDepartment) errorMessage += '- Wybierz departament\n';
     if (!this.selectedGoal) errorMessage += '- Wybierz cel\n';
-    if (!this.selectedGoal?.metric?.level?.trim()) errorMessage += '- Uzupełnij poziom\n';
+    if (!this.selectedGoal?.metric?.level?.trim()) errorMessage += '- Uzupełnij planowaną wartość\n';
     alert(errorMessage);
   }
 }
 
 
+
+  exportToExcel(): void {
+    console.log('🔹 Eksportowanie danych:', this.dataService.savedData);
+    this.exportService.exportToExcel(this.dataService.savedData);
+  }
 }

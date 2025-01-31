@@ -1,82 +1,74 @@
-/* Styl dla tabeli */
+/* Główna tabela */
 table {
     width: 100%;
-    /* Tabela zajmuje całą szerokość */
     table-layout: fixed;
-    /* Stałe szerokości kolumn */
     border-collapse: collapse;
-    /* Usuwa odstępy między komórkami */
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Nagłówki */
+.mat-header-row {
+    background-color: #1976d2;
+    color: white;
+    font-weight: bold;
+    height: 50px;
 }
 
 /* Komórki tabeli */
 .mat-cell,
 .mat-header-cell {
     white-space: pre-wrap;
-    /* Zachowuje nowe linie */
     word-wrap: break-word;
-    /* Zawijanie tekstu */
-    overflow: visible;
-    /* Widoczna zawartość */
     height: auto;
-    /* Dynamiczna wysokość komórki */
-    padding: 4px 8px;
-        /* Zmniejsz odstępy pionowe i poziome */
+    padding: 8px 12px;
+    font-size: 14px;
 }
 
-/* Kolumny o szerokości 350px */
-.mat-column-goal,
-.mat-column-metricName,
-.mat-column-metricDescription,
-.mat-column-tasks {
+/* Dynamiczne szerokości kolumn */
+.mat-column-goal {
     width: 250px;
 }
 
-.selected-row {
-    background-color: #f5f5f5;
-    /* Kolor tła dla zaznaczonego wiersza */
-    transition: background-color 0.2s;
-    /* Płynna zmiana koloru */
+.mat-column-metricName {
+    width: 250px;
 }
-/* Kolumna o szerokości 100px */
+
+.mat-column-metricDescription {
+    width: 350px;
+}
+
+.mat-column-tasks {
+    width: 400px;
+}
 
 .mat-column-level,
 .mat-column-department {
-    width: 100px;
-    white-space: pre-wrap;
-    /* Zawijanie tekstu */
-    overflow: hidden;
-    /* Ukrycie tekstu wykraczającego poza komórkę */
-    text-overflow: ellipsis;
-    /* Dodaje "..." dla bardzo długiego tekstu */
+    width: 120px;
+    text-align: center;
 }
 
-/* Dynamiczne dostosowanie wysokości textarea */
+/* Pole tekstowe (textarea) */
 textarea {
     width: 100%;
-    /* Szerokość pola */
-    resize: none;
-    /* Wyłącz ręczne zmienianie rozmiaru */
+    min-height: 50px;
+    resize: both;
+    /* Można rozszerzać w pionie i poziomie */
     white-space: pre-wrap;
-    /* Zachowuje białe znaki i nowe linie */
     word-wrap: break-word;
-    /* Zawijanie tekstu */
-    height: auto;
-    /* Dynamiczne dopasowanie wysokości */
-    overflow: hidden;
-    /* Ukrycie przewijania pionowego */
-    line-height: 1.5;
-    /* Wysokość wiersza */
+    overflow: auto;
     font-size: 14px;
-    /* Rozmiar tekstu */
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-/* Wiersze tabeli */
-.mat-row {
-    height: auto;
-    /* Dynamiczna wysokość wierszy tabeli */
-}
-.mat-header-row {
-    height: auto;
+/* Wyróżnienie zaznaczonego wiersza */
+.selected-row {
+    background-color: #e3f2fd;
+    transition: background-color 0.2s;
 }
 
 /* Styl dla przycisków */
