@@ -1,0 +1,11 @@
+<mat-drawer-container>
+    <mat-drawer mode="side" opened>
+        <app-sidebar></app-sidebar> <!-- Sidebar -->
+    </mat-drawer>
+
+    <mat-drawer-content>
+        <div class="layout-container">
+            <router-outlet></router-outlet> <!-- Dynamiczna zawartość -->
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

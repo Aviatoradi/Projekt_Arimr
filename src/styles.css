@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -12,18 +12,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
     h2,
     h3 {
-        margin: 0 0 10px 0; // Dodanie odstępu poniżej tytułu
+        margin: 0 0 10px 0;
     }
 }
 
 .department-select {
-    width: 20%; // Szerokość listy departamentów (1/5 szerokości ekranu)
-    min-width: 200px; // Minimalna szerokość
+    width: 20%;
+    min-width: 200px;
 }
 
 .goal-select {
-    width: 50%; // Szerokość listy celów (połowa szerokości ekranu)
-    min-width: 300px; // Minimalna szerokość
+    width: 50%;
+    min-width: 300px;
 }
 
 .sidebar {
@@ -34,6 +34,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .main-content {
   border: 2px solid blue;
   /* Obwódka głównej treści */
+}
+
+.layout-container {
+    max-width: 966px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    margin: 0 auto;
 }
 
 .container {

@@ -1,30 +1,66 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { FormsModule } from '@angular/forms'; // ✅ FormsModule dla ngModel
-import { CommonModule } from '@angular/common'; // ✅ CommonModule dla ngIf
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatIcon} from '@angular/material/icon';
+import {NgIf} from '@angular/common';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatButton, MatIconButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
-  standalone: true, // ✅ Używamy standalone component
   templateUrl: './login.component.html',
-  // styleUrls: ['./login.component.scss'],
-  imports: [FormsModule, CommonModule] // ✅ Naprawione: dodane FormsModule i CommonModule!
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatInput,
+    MatIcon,
+    NgIf,
+    MatCheckbox,
+    MatButton,
+    MatError,
+      MatLabel,
+    MatIconButton
+  ],
+  standalone: true,
+  styleUrls: ['./login.component.css']
 })
-  
-  
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
-  errorMessage: string = '';
+  loginForm: FormGroup;
+  hidePassword = true;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+      private fb: FormBuilder,
+      private snackBar: MatSnackBar
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
 
-  login() {
-    if (this.authService.login(this.username, this.password)) {
-      this.router.navigate(['/dashboard']); // ✅ Przekierowanie po zalogowaniu
+  onSubmit(): void {
+    if (this.loginForm.valid) {
+      // Handle login logic here
+      console.log(this.loginForm.value);
     } else {
-      this.errorMessage = 'Nieprawidłowy login lub hasło';
+      this.snackBar.open('Please fill in all required fields correctly', 'Close', {
+        duration: 3000
+      });
     }
+  }
+
+  getErrorMessage(field: string): string {
+    if (this.loginForm.get(field)?.hasError('required')) {
+      return `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+    }
+    if (field === 'email' && this.loginForm.get('email')?.hasError('email')) {
+      return 'Please enter a valid email address';
+    }
+    if (field === 'password' && this.loginForm.get('password')?.hasError('minlength')) {
+      return 'Password must be at least 6 characters long';
+    }
+    return '';
   }
 }
