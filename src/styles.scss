@@ -1,0 +1,23 @@
+@use '@angular/material' as mat;
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+//@include mat.core();
+//@include mat.all-component-bases(mat.$azure-palette);
+
+body {
+  margin: 0;
+  font-family: Inter, 'Helvetica Neue';
+  @include mat.theme(
+    (
+      color: mat.$azure-palette,
+      typography: Inter,
+      density: 0,
+    )
+  );
+}
+

@@ -12,12 +12,11 @@
 
         <!-- Login Form -->
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
-            <div class=" shadow-sm space-y-4">
+            <div class="shadow-sm space-y-4">
                 <!-- Email Field -->
                 <mat-form-field appearance="outline" class="w-full">
                     <mat-label>Email address</mat-label>
-                    <input matInput formControlName="email" type="email"
-                           placeholder="name@example.com" required>
+                    <input matInput formControlName="email" type="email">
                     <mat-error *ngIf="loginForm.get('email')?.invalid">
                         {{ getErrorMessage('email') }}
                     </mat-error>
