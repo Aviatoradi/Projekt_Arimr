@@ -1,21 +1,47 @@
-<mat-nav-list>
-    <mat-list-item routerLink="/dashboard" routerLinkActive="active">
-        <mat-icon>dashboard</mat-icon>
-        <span>Dashboard</span>
-    </mat-list-item>
+<div class="h-full flex flex-col justify-between bg-blue-100 pb-4">
+  <mat-nav-list class="py-2">
+    @for (item of navigationItems; track item.path) {
+      <mat-list-item
+        [routerLink]="'/app' + item.path"
+        routerLinkActive="bg-blue-50 text-blue-600"
+        class="my-1 rounded-lg transition-colors duration-200 hover:bg-gray-100"
+      >
+        <div class="flex items-center px-4 py-2">
+          <mat-icon class="mr-3 text-gray-500">
+            {{ item.icon }}
+          </mat-icon>
+          <span class="text-md font-medium">{{ item.label }}</span>
+        </div>
+      </mat-list-item>
+    }
+  </mat-nav-list>
 
-    <mat-list-item routerLink="/goals" routerLinkActive="active">
-        <mat-icon>flag</mat-icon>
-        <span>Cele</span>
-    </mat-list-item>
+  @if (user(); as user) {
+    <div class="flex flex-col p-4 border-b border-gray-200">
+      <div class="flex items-center space-x-3 mb-4">
+        <div
+          class="flex items-center justify-center text-gray-600 bg-gray-100 p-1 rounded-full"
+        >
+          <mat-icon class="">person</mat-icon>
+        </div>
 
-    <mat-list-item routerLink="/custom-goal" routerLinkActive="active">
-        <mat-icon>assignment</mat-icon>
-        <span>Dodaj swój cel</span>
-    </mat-list-item>
+        <div class="flex flex-col">
+          <span class="font-medium text-gray-900">{{ user.email }}</span>
+          <span class="text-xs font-bold text-gray-500 mt-2">{{
+            user.role
+          }}</span>
+        </div>
+      </div>
 
-    <mat-list-item routerLink="/tasks" routerLinkActive="active">
-        <mat-icon>settings</mat-icon>
-        <span>Podsumowanie</span>
-    </mat-list-item>
-</mat-nav-list>
+      <button
+        mat-flat-button
+        color="warn"
+        class="w-full flex items-center justify-center space-x-2 text-sm"
+        (click)="logout()"
+      >
+        <mat-icon class="text-sm">exit_to_app</mat-icon>
+        <span>Wyloguj</span>
+      </button>
+    </div>
+  }
+</div>

@@ -1,13 +1,11 @@
 <mat-drawer-container class="min-h-screen">
   <mat-drawer mode="side" opened>
     <app-sidebar></app-sidebar>
-    <!-- Sidebar -->
   </mat-drawer>
 
   <mat-drawer-content>
-    <div class="layout-container">
+    <div class="layout-container bg-gray-100 min-h-screen p-4">
       <router-outlet></router-outlet>
-      <!-- Dynamiczna zawartość -->
     </div>
   </mat-drawer-content>
 </mat-drawer-container>

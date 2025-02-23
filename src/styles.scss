@@ -4,6 +4,7 @@
 *::after,
 *::before {
   box-sizing: border-box;
+  border-style: none;
 }
 
 body {
@@ -17,4 +18,3 @@ body {
     )
   );
 }
-

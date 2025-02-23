@@ -3,6 +3,7 @@ import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
 import { AuthRepository } from '../auth/auth.repository';
 import { CookieService } from 'ngx-cookie-service';
 import { UserDto } from '../auth/user.dto';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,8 @@ export class AuthService {
 
   private readonly cookieService = inject(CookieService);
 
+  private readonly router = inject(Router);
+
   setCurrentUser(): Observable<void> {
     if (!this.getAuthToken()) {
       return of(void 0);
@@ -28,6 +31,9 @@ export class AuthService {
         next: (dto) => {
           this.isAuthenticated$.next(true);
           this.user$.next(dto);
+        },
+        error: (err) => {
+          this.router.navigate(['/login']);
         },
       }),
       map(() => void 0)
@@ -56,5 +62,6 @@ export class AuthService {
     this.isAuthenticated$.next(false);
     this.user$.next(null);
     this.cookieService.delete('Auth-Token');
+    this.router.navigate(['/login']);
   }
 }

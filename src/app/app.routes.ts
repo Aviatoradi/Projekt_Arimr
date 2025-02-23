@@ -16,7 +16,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: '',
+        path: 'dashboard',
         loadComponent: () =>
           import('./dashboard/dashboard.component').then(
             (c) => c.DashboardComponent
@@ -27,6 +27,11 @@ export const routes: Routes = [
       { path: 'custom-goal', component: CustomGoalComponent },
       { path: 'settings', component: SettingsComponent },
       { path: 'profile', component: ProfileComponent },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'dashboard',
+      },
     ],
   },
   { path: 'login', component: LoginComponent },
@@ -40,4 +45,3 @@ export const routes: Routes = [
   // }
   { path: '', redirectTo: 'app', pathMatch: 'full' }, // ✅ Domyślnie przekierowuje na logowanie
 ];
-

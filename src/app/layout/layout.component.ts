@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
-import {RouterOutlet} from '@angular/router';
-import {SidebarComponent} from '../sidebar/sidebar.component';
-import {MatDrawer, MatDrawerContainer, MatDrawerContent} from '@angular/material/sidenav';
+import { RouterOutlet } from '@angular/router';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import {
+  MatDrawer,
+  MatDrawerContainer,
+  MatDrawerContent,
+} from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-layout',
@@ -10,11 +14,9 @@ import {MatDrawer, MatDrawerContainer, MatDrawerContent} from '@angular/material
     SidebarComponent,
     MatDrawer,
     MatDrawerContainer,
-      MatDrawerContent,
+    MatDrawerContent,
   ],
   templateUrl: 'layout.component.html',
-  standalone: true
+  standalone: true,
 })
-export class LayoutComponent {
-
-}
+export class LayoutComponent {}
