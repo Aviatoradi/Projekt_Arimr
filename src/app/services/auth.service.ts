@@ -1,26 +1,60 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
+import { AuthRepository } from '../auth/auth.repository';
+import { CookieService } from 'ngx-cookie-service';
+import { UserDto } from '../auth/user.dto';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private loggedInUser: string | null = null;
+  readonly isAuthenticated$ = new BehaviorSubject(false);
 
-  login(username: string, password: string): boolean {
-    if (username === 'admin' && password === 'password') { 
-      this.loggedInUser = username;
-      localStorage.setItem('loggedInUser', username); // ✅ Przechowujemy sesję użytkownika
-      return true;
+  readonly user$ = new BehaviorSubject<UserDto | null>(null);
+
+  readonly authenticating$ = new BehaviorSubject(false);
+
+  private readonly repository = inject(AuthRepository);
+
+  private readonly cookieService = inject(CookieService);
+
+  setCurrentUser(): Observable<void> {
+    if (!this.getAuthToken()) {
+      return of(void 0);
     }
-    return false;
+
+    return this.repository.getCurrentUser().pipe(
+      tap({
+        next: (dto) => {
+          this.isAuthenticated$.next(true);
+          this.user$.next(dto);
+        },
+      }),
+      map(() => void 0)
+    );
   }
 
-  getLoggedInUser(): string | null {
-    return localStorage.getItem('loggedInUser'); // ✅ Pobieramy użytkownika z localStorage
+  login(username: string, password: string): Observable<void> {
+    this.authenticating$.next(true);
+    return this.repository.login(username, password).pipe(
+      tap({
+        next: ({ accessToken }) => {
+          this.cookieService.set('Auth-Token', accessToken);
+        },
+      }),
+      switchMap(() => {
+        return this.setCurrentUser();
+      })
+    );
+  }
+
+  private getAuthToken(): string | null {
+    return this.cookieService.get('Auth-Token');
   }
 
   logout(): void {
-    this.loggedInUser = null;
-    localStorage.removeItem('loggedInUser'); // ✅ Usuwamy sesję użytkownika
+    this.isAuthenticated$.next(false);
+    this.user$.next(null);
+    this.cookieService.delete('Auth-Token');
   }
 }
