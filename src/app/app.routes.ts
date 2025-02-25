@@ -22,6 +22,13 @@ export const routes: Routes = [
             (c) => c.DashboardComponent
           ),
       },
+      {
+        path: 'departments/:id',
+        loadComponent: () =>
+          import('./department-page/department-page.component').then(
+            (c) => c.DepartmentPageComponent
+          ),
+      },
       { path: 'goals', component: GoalEditorComponent },
       { path: 'tasks', component: TaskViewComponent },
       { path: 'custom-goal', component: CustomGoalComponent },

@@ -1,13 +1,8 @@
 <div class="container">
   <h2 class="center-content">Wybierz departament</h2>
-  <div class="departments-grid">
-    <mat-card *ngFor="let department of dataService.departments"
-              (click)="selectDepartment(department)"
-              [ngClass]="{'selected': selectedDepartment === department}"
-              class="department-tile">
-      <h3>{{ department.name }}</h3>
-    </mat-card>
-  </div>
+  <app-departments>
+
+  </app-departments>
 
   <div *ngIf="selectedDepartment" class="center-content">
     <h3>Wybierz cel</h3>
