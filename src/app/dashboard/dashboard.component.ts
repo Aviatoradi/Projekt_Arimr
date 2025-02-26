@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { DepartmentsComponent } from "../departments/departments.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.component.html',
-//styleUrls: ['./dashboard.component.scss']
+  imports: [DepartmentsComponent],
+  //styleUrls: ['./dashboard.component.scss']
 })
-
 export class DashboardComponent {
-
-
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   navigateTo(section: string) {
     if (section === 'centrala') {

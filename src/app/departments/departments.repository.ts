@@ -17,4 +17,10 @@ export class DepartmentsRepository {
       this.client.get<Department[]>(`${this.apiUrl}/api/departments/my`)
     );
   }
+
+  getOneDepartment(id: number): Promise<Department> {
+    return firstValueFrom(
+      this.client.get<Department>(`${this.apiUrl}/api/departments/${id}`)
+    );
+  }
 }

@@ -13,6 +13,7 @@ import { NgIf } from '@angular/common';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +39,8 @@ export class LoginComponent {
 
   private readonly authService = inject(AuthService);
 
+  private readonly router = inject(Router);
+
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar
@@ -52,7 +55,9 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.authService
         .login(this.loginForm.value.email, this.loginForm.value.password)
-        .subscribe();
+        .subscribe({
+          next: () => this.router.navigate(['/app']),
+        });
     } else {
       this.snackBar.open(
         'Please fill in all required fields correctly',

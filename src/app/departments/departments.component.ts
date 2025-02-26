@@ -6,10 +6,10 @@ import {
   resource,
   ResourceRef,
 } from '@angular/core';
-import { API_URL } from '../api/api-url.token';
 import { MatIcon } from '@angular/material/icon';
 import { Department } from './department';
 import { DepartmentsRepository } from './departments.repository';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-departments',
@@ -21,6 +21,8 @@ import { DepartmentsRepository } from './departments.repository';
 export class DepartmentsComponent {
   private readonly repository = inject(DepartmentsRepository);
 
+  private readonly router = inject(Router);
+
   readonly departments: ResourceRef<Department[] | undefined> = resource({
     loader: () => {
       return this.repository.getCurrentUserDepartments();
@@ -29,5 +31,7 @@ export class DepartmentsComponent {
 
   readonly deps = computed(() => this.departments.value());
 
-  viewDetails(department: Department) {}
+  viewDetails(department: Department) {
+    this.router.navigate(['app', 'departments', department.id]);
+  }
 }
