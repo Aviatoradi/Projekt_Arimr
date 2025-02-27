@@ -1,21 +1,21 @@
 <div class="container mx-auto pb-6">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Goal Templates</h1>
+    <h1 class="text-2xl font-bold text-gray-800">Szablony - cele</h1>
     <button mat-raised-button color="primary" (click)="createNewTemplate()" class="flex items-center">
       <mat-icon>add</mat-icon>
-      <span class="ml-1">New Template</span>
+      <span class="ml-1">Nowy szablon</span>
     </button>
   </div>
 
   <mat-card class="mb-6">
     <mat-card-content>
-      <div class="flex justify-between items-center mb-4">
-        <mat-form-field appearance="outline" class="w-full max-w-md">
-          <mat-label>Filter</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Search templates..." #input>
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-      </div>
+<!--      <div class="flex justify-between items-center mb-4">-->
+<!--        <mat-form-field appearance="outline" class="w-full max-w-md">-->
+<!--          <mat-label>Filter</mat-label>-->
+<!--          <input matInput (keyup)="applyFilter($event)" placeholder="Search templates..." #input>-->
+<!--          <mat-icon matSuffix>search</mat-icon>-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
 
       <div class="overflow-auto">
         <table mat-table [dataSource]="dataSource" matSort class="w-full">
@@ -27,31 +27,31 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nazwa </th>
             <td mat-cell *matCellDef="let template"> {{template.name}} </td>
           </ng-container>
 
           <!-- Measure Column -->
           <ng-container matColumnDef="measure">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Measure </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Miernik </th>
             <td mat-cell *matCellDef="let template"> {{template.measure}} </td>
           </ng-container>
 
           <!-- Type Column -->
           <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Typ </th>
             <td mat-cell *matCellDef="let template"> {{template.type}} </td>
           </ng-container>
 
           <!-- Created At Column -->
           <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Created At </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Data </th>
             <td mat-cell *matCellDef="let template"> {{template.createdAt | date:'medium'}} </td>
           </ng-container>
 
           <!-- Actions Column -->
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <th mat-header-cell *matHeaderCellDef> Akcje </th>
             <td mat-cell *matCellDef="let template" class="whitespace-nowrap">
               <button mat-icon-button color="primary" (click)="viewTemplate(template)" matTooltip="View Details">
                 <mat-icon>visibility</mat-icon>
