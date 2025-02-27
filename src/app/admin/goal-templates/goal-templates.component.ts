@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
 import { GoalDto } from "../dtos";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatCard, MatCardContent } from "@angular/material/card";
-import { MatFormField } from "@angular/material/form-field";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import {
   MatCell,
@@ -48,6 +48,8 @@ import { GoalsService } from "../services/goals.service";
     MatNoDataRow,
     MatCell,
     MatInput,
+    MatLabel,
+    MatPaginator,
   ],
   templateUrl: './goal-templates.component.html',
   styleUrl: './goal-templates.component.scss',
@@ -111,7 +113,7 @@ export class GoalTemplatesComponent {
   }
 
   createNewTemplate(): void {
-    this.router.navigate(['/goals/create'], {
+    this.router.navigate(['/app/admin/goals/create'], {
       queryParams: { isTemplate: true },
     });
   }

@@ -26,22 +26,22 @@ export class SidebarComponent {
 
   private readonly _navigationItems: NavItem[] = [
     {
-      path: '/dashboard',
+      path: '/app/dashboard',
       icon: 'dashboard',
       label: 'Dashboard',
     },
     {
-      path: '/goals',
+      path: '/app/goals',
       icon: 'flag',
       label: 'Cele',
     },
     {
-      path: '/custom-goal',
+      path: '/app/custom-goal',
       icon: 'assignment',
       label: 'Dodaj swój cel',
     },
     {
-      path: '/tasks',
+      path: '/app/tasks',
       icon: 'settings',
       label: 'Podsumowanie',
     },

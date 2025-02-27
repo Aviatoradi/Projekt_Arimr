@@ -1,12 +1,20 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import {
-  FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatFormField } from '@angular/material/form-field';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatButton } from '@angular/material/button';
@@ -19,6 +27,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GoalsService } from '../services/goals.service';
 import { DepartmentsService } from '../services/departments.service';
+import {
+  takeUntilDestroyed,
+  toObservable,
+  toSignal,
+} from '@angular/core/rxjs-interop';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { GoalTypeEnum } from '../goal-type.enum';
 
 @Component({
   selector: 'app-create-goal-form',
@@ -33,173 +48,210 @@ import { DepartmentsService } from '../services/departments.service';
     MatButton,
     MatProgressSpinner,
     NgIf,
+    MatLabel,
+    MatError,
     MatInput,
     NgForOf,
+    CdkTextareaAutosize,
   ],
   templateUrl: './create-goal-form.component.html',
   styleUrl: './create-goal-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class CreateGoalFormComponent {
-  goalForm: FormGroup;
-  departments: DepartmentDto[] = [];
-  goalTemplates: GoalDto[] = [];
-  isEditMode = false;
-  goalId: number | null = null;
-  isLoading = false;
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private goalsService = inject(GoalsService);
+  private departmentsService = inject(DepartmentsService);
+  private snackBar = inject(MatSnackBar);
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private goalsService: GoalsService,
-    private departmentsService: DepartmentsService,
-    private snackBar: MatSnackBar
-  ) {
-    this.goalForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
-      measure: ['', [Validators.required, Validators.maxLength(100)]],
-      type: ['', [Validators.required, Validators.maxLength(100)]],
-      isTemplate: [false],
-      departmentId: [null],
-      parentGoalId: [null],
-    });
+  // Signals
+  departments = signal<DepartmentDto[]>([]);
+  goalTemplates = signal<GoalDto[]>([]);
+  isLoading = signal<boolean>(false);
+  isEditMode = signal<boolean>(false);
+  goalId = signal<number | null>(null);
+
+  // Form controls with signals
+  nameControl = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(100),
+  ]);
+  measureControl = new FormControl('', [
+    Validators.required,
+  ]);
+  typeControl = new FormControl(GoalTypeEnum.Operational, [
+    Validators.required,
+    Validators.maxLength(100),
+  ]);
+  isTemplateControl = new FormControl(false);
+  departmentIdControl = new FormControl<number | null>(null);
+  parentGoalIdControl = new FormControl<number | null>(null);
+
+  goalForm = new FormGroup({
+    name: this.nameControl,
+    measure: this.measureControl,
+    type: this.typeControl,
+    isTemplate: this.isTemplateControl,
+    departmentId: this.departmentIdControl,
+    parentGoalId: this.parentGoalIdControl,
+  });
+
+  isFormValid = computed(() => this.goalForm.valid);
+
+  constructor() {
+    // Initialize from route params
+    this.initFromRouteParams();
+
+    // Load data
+    this.loadFormDependencies();
+
+    // Setup effects
+    this.setupFormEffects();
   }
 
-  ngOnInit(): void {
-    // Handle query params first (for creating a template directly)
-    this.route.queryParams.subscribe((params) => {
+  private initFromRouteParams(): void {
+    // Handle query params
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((params) => {
       if (params['isTemplate']) {
-        this.goalForm.patchValue({ isTemplate: true });
+        this.isTemplateControl.setValue(true);
       }
     });
 
     // Handle route params for edit mode
-    this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntilDestroyed()).subscribe((params) => {
+      console.log(params);
       if (params['id']) {
-        this.isEditMode = true;
-        this.goalId = +params['id'];
+        this.isEditMode.set(true);
+        this.goalId.set(+params['id']);
         this.loadGoalData();
       }
     });
+  }
 
-    this.loadFormDependencies();
+  private setupFormEffects(): void {
+    effect(() => {
+      const isTemplate = this.isTemplateControl.value;
+
+      if (isTemplate) {
+        this.departmentIdControl.setValue(null);
+        // this.departmentIdControl.disable();
+      } else {
+        this.departmentIdControl.enable();
+      }
+    });
   }
 
   loadFormDependencies(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
+
     forkJoin({
       departments: this.departmentsService.getAllDepartments(),
       templates: this.goalsService.getGoalTemplates(),
     }).subscribe({
       next: (result) => {
-        this.departments = result.departments;
-        this.goalTemplates = result.templates;
-        this.isLoading = false;
+        this.departments.set(result.departments);
+        this.goalTemplates.set(result.templates);
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error loading form dependencies', error);
         this.snackBar.open('Failed to load form data', 'Close', {
           duration: 3000,
         });
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
 
   loadGoalData(): void {
-    if (!this.goalId) return;
+    const goalId = this.goalId();
+    if (!goalId) return;
 
-    this.isLoading = true;
-    this.goalsService.getGoalById(this.goalId).subscribe({
+    this.isLoading.set(true);
+
+    this.goalsService.getGoalById(goalId).subscribe({
       next: (goal) => {
-        this.goalForm.patchValue({
-          name: goal.name,
-          measure: goal.measure,
-          type: goal.type,
-          isTemplate: goal.isTemplate,
-          departmentId: goal.departmentId || null,
-          parentGoalId: goal.parentGoalId || null,
-        });
-        this.isLoading = false;
+        this.nameControl.setValue(goal.name);
+        this.measureControl.setValue(goal.measure);
+        this.typeControl.setValue(goal.type as GoalTypeEnum);
+        this.isTemplateControl.setValue(goal.isTemplate || false);
+        this.departmentIdControl.setValue(goal.departmentId || null);
+        this.parentGoalIdControl.setValue(goal.parentGoalId || null);
+
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error loading goal data', error);
         this.snackBar.open('Failed to load goal data', 'Close', {
           duration: 3000,
         });
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
 
   onSubmit(): void {
-    if (this.goalForm.invalid) return;
+    if (!this.isFormValid()) return;
 
-    this.isLoading = true;
-    const goalData = this.goalForm.value;
+    this.isLoading.set(true);
+
+    const goalData = { ...this.goalForm.value } as GoalDto;
 
     // Make sure departmentId is null for templates
     if (goalData.isTemplate) {
-      goalData.departmentId = null;
+      goalData.departmentId = undefined;
     }
 
     // Handle empty string or undefined values
-    if (!goalData.departmentId) delete goalData.departmentId;
-    if (!goalData.parentGoalId) delete goalData.parentGoalId;
+    if (!goalData.departmentId) {
+      delete goalData.departmentId;
+    }
+    if (!goalData.parentGoalId) {
+      delete goalData.parentGoalId;
+    }
 
     const request =
-      this.isEditMode && this.goalId
-        ? this.goalsService.updateGoal(this.goalId, goalData)
+      this.isEditMode() && this.goalId()
+        ? this.goalsService.updateGoal(this.goalId()!, goalData)
         : this.goalsService.createGoal(goalData);
 
     request.subscribe({
       next: (goal) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.snackBar.open(
-          `Goal ${this.isEditMode ? 'updated' : 'created'} successfully`,
+          `Goal ${this.isEditMode() ? 'updated' : 'created'} successfully`,
           'Close',
           { duration: 3000 }
         );
 
         if (goal.isTemplate) {
-          this.router.navigate(['/goals/templates']);
+          this.router.navigate(['/app/admin/goal-templates']);
         } else {
           this.router.navigate(['/goals', goal.id]);
         }
       },
       error: (error) => {
         console.error(
-          `Error ${this.isEditMode ? 'updating' : 'creating'} goal`,
+          `Error ${this.isEditMode() ? 'updating' : 'creating'} goal`,
           error
         );
         this.snackBar.open(
-          `Failed to ${this.isEditMode ? 'update' : 'create'} goal`,
+          `Failed to ${this.isEditMode() ? 'update' : 'create'} goal`,
           'Close',
           { duration: 3000 }
         );
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
 
   onCancel(): void {
-    if (this.isEditMode && this.goalId) {
-      this.router.navigate(['/goals', this.goalId]);
+    if (this.isEditMode() && this.goalId()) {
+      this.router.navigate(['/goals', this.goalId()]);
     } else {
-      this.router.navigate(['/goals/templates']);
-    }
-  }
-
-  onTemplateTypeChange(): void {
-    const isTemplateControl = this.goalForm.get('isTemplate');
-    const departmentIdControl = this.goalForm.get('departmentId');
-
-    if (isTemplateControl?.value) {
-      departmentIdControl?.setValue(null);
-      departmentIdControl?.disable();
-    } else {
-      departmentIdControl?.enable();
+      this.router.navigate(['/app/admin/goal-templates']);
     }
   }
 }

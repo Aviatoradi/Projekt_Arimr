@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { inject, provideAppInitializer } from '@angular/core';
+import { inject, LOCALE_ID, provideAppInitializer } from "@angular/core";
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app/app.routes';
 import {
@@ -16,6 +16,12 @@ import { environment } from './environents/environment';
 import { AuthService } from './app/services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
+import localePl from '@angular/common/locales/pl';
+import localePlExtra from '@angular/common/locales/extra/pl';
+
+import { registerLocaleData } from "@angular/common";
+
+registerLocaleData(localePl, 'pl-PL', localePlExtra);
 
 function setBearer(
   req: HttpRequest<any>,
@@ -47,11 +53,14 @@ export const jwtTokenInterceptor: HttpInterceptorFn = (
   return next(setBearer(httpRequest, token));
 };
 
+
+
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([jwtTokenInterceptor])),
     provideAnimations(),
+    { provide: LOCALE_ID, useValue: 'pl-PL' },
     {
       provide: API_URL,
       useValue: environment.apiUrl,

@@ -36,6 +36,20 @@ export const routes: Routes = [
             (c) => c.AdminPanelComponent
           ),
       },
+      {
+        path: 'admin/goal-templates',
+        loadComponent: () =>
+          import('./admin/goal-templates/goal-templates.component').then(
+            (c) => c.GoalTemplatesComponent
+          ),
+      },
+      {
+        path: 'admin/goals/create',
+        loadComponent: () =>
+          import('./admin/create-goal-form/create-goal-form.component').then(
+            (c) => c.CreateGoalFormComponent
+          ),
+      },
       { path: 'goals', component: GoalEditorComponent },
       { path: 'tasks', component: TaskViewComponent },
       { path: 'custom-goal', component: CustomGoalComponent },
