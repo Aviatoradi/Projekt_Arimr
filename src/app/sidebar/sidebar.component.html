@@ -1,20 +1,8 @@
+<!-- sidebar.component.html -->
 <div class="h-full flex flex-col justify-between bg-blue-100 pb-4">
-  <mat-nav-list class="py-2">
-    @for (item of navigationItems(); track item.path) {
-      <mat-list-item
-        [routerLink]="'/app' + item.path"
-        routerLinkActive="bg-blue-50 text-blue-600"
-        class="my-1 rounded-lg transition-colors duration-200 hover:bg-gray-100"
-      >
-        <div class="flex items-center px-4 py-2">
-          <mat-icon class="mr-3 text-gray-500">
-            {{ item.icon }}
-          </mat-icon>
-          <span class="text-md font-medium">{{ item.label }}</span>
-        </div>
-      </mat-list-item>
-    }
-  </mat-nav-list>
+  <div class="py-2">
+    <ng-container *ngTemplateOutlet="navItemsList; context: { items: navigationItems() }"></ng-container>
+  </div>
 
   @if (user(); as user) {
     <div class="flex flex-col p-4 border-b border-gray-200">
@@ -28,8 +16,8 @@
         <div class="flex flex-col">
           <span class="font-medium text-gray-900">{{ user.email }}</span>
           <span class="text-xs font-bold text-gray-500 mt-2">{{
-            user.role
-          }}</span>
+              user.role
+            }}</span>
         </div>
       </div>
 
@@ -45,3 +33,54 @@
     </div>
   }
 </div>
+
+<!-- Template for recursive navigation items -->
+<ng-template #navItemsList let-items="items">
+  <mat-nav-list class="py-0">
+    @for (item of items; track item.path) {
+      <div class="my-1">
+        @if (item.children && item.children.length) {
+          <!-- Parent item with children -->
+          <div
+            class="flex items-center px-4 py-2 cursor-pointer rounded-lg transition-colors duration-200 hover:bg-gray-100"
+            (click)="toggleExpand(item.path)"
+          >
+            <mat-icon class="mr-3 text-gray-500">
+              {{ item.icon }}
+            </mat-icon>
+            <span class="text-md font-medium">{{ item.label }}</span>
+            <mat-icon class="ml-auto text-gray-500 transition-transform duration-200"
+                      [class.rotate-180]="isExpanded(item.path)">
+              expand_more
+            </mat-icon>
+          </div>
+
+          <!-- Children container with animation -->
+          <div class="overflow-hidden transition-all duration-300"
+               [class.h-0]="!isExpanded(item.path)"
+               [class.opacity-0]="!isExpanded(item.path)"
+               [class.opacity-100]="isExpanded(item.path)">
+            <div class="pl-6">
+              <ng-container *ngTemplateOutlet="navItemsList; context: { items: item.children }"></ng-container>
+            </div>
+          </div>
+        } @else {
+          <!-- Regular item without children -->
+          <mat-list-item
+            [routerLink]="item.path"
+            routerLinkActive="bg-blue-50 text-blue-600"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="rounded-lg transition-colors duration-200 hover:bg-gray-100"
+          >
+            <div class="flex items-center px-4 py-2">
+              <mat-icon class="mr-3 text-gray-500">
+                {{ item.icon }}
+              </mat-icon>
+              <span class="text-md font-medium">{{ item.label }}</span>
+            </div>
+          </mat-list-item>
+        }
+      </div>
+    }
+  </mat-nav-list>
+</ng-template>

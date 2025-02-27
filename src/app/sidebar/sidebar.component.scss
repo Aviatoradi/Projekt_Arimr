@@ -1,0 +1,22 @@
+//.rotate-180 {
+//  transform: rotate(180deg);
+//}
+//
+///* Styling for indentation levels */
+//.pl-6 {
+//  .pl-6 {
+//    padding-left: 2rem; /* Additional padding for nested items */
+//  }
+//}
+
+/* Override Material styles for better nested navigation */
+::ng-deep {
+  .mat-mdc-list-item-unscoped-content {
+    width: 100%;
+  }
+
+  /* Handle active state for parent items */
+  .active-parent {
+    background-color: rgba(59, 130, 246, 0.05);
+  }
+}
