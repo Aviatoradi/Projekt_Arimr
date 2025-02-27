@@ -29,6 +29,13 @@ export const routes: Routes = [
             (c) => c.DepartmentPageComponent
           ),
       },
+      {
+        path: 'admin',
+        loadComponent: () =>
+          import('./admin/admin-panel/admin-panel.component').then(
+            (c) => c.AdminPanelComponent
+          ),
+      },
       { path: 'goals', component: GoalEditorComponent },
       { path: 'tasks', component: TaskViewComponent },
       { path: 'custom-goal', component: CustomGoalComponent },

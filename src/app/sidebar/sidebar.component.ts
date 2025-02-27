@@ -1,17 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MatButton } from "@angular/material/button";
+import { MatButton } from '@angular/material/button';
 
 interface NavItem {
   path: string;
   icon: string;
   label: string;
 }
-
 
 @Component({
   selector: 'app-sidebar',
@@ -25,28 +24,45 @@ export class SidebarComponent {
 
   readonly user = toSignal(this.authService.user$);
 
-  navigationItems: NavItem[] = [
+  private readonly _navigationItems: NavItem[] = [
     {
       path: '/dashboard',
       icon: 'dashboard',
-      label: 'Dashboard'
+      label: 'Dashboard',
     },
     {
       path: '/goals',
       icon: 'flag',
-      label: 'Cele'
+      label: 'Cele',
     },
     {
       path: '/custom-goal',
       icon: 'assignment',
-      label: 'Dodaj swój cel'
+      label: 'Dodaj swój cel',
     },
     {
       path: '/tasks',
       icon: 'settings',
-      label: 'Podsumowanie'
-    }
+      label: 'Podsumowanie',
+    },
   ];
+  readonly navigationItems = computed<NavItem[]>(() => {
+    const user = this.user();
+
+    if (user?.role == 'admin') {
+      return [
+        ...this._navigationItems,
+        {
+          path: '/admin',
+          icon: 'admin_panel_settings',
+          label: 'Panel administratora',
+        },
+      ];
+    }
+
+    return this._navigationItems;
+  });
+
   logout() {
     this.authService.logout();
   }

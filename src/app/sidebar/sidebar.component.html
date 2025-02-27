@@ -1,6 +1,6 @@
 <div class="h-full flex flex-col justify-between bg-blue-100 pb-4">
   <mat-nav-list class="py-2">
-    @for (item of navigationItems; track item.path) {
+    @for (item of navigationItems(); track item.path) {
       <mat-list-item
         [routerLink]="'/app' + item.path"
         routerLinkActive="bg-blue-50 text-blue-600"

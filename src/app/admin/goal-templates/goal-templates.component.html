@@ -1,0 +1,92 @@
+<div class="container mx-auto pb-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Goal Templates</h1>
+    <button mat-raised-button color="primary" (click)="createNewTemplate()" class="flex items-center">
+      <mat-icon>add</mat-icon>
+      <span class="ml-1">New Template</span>
+    </button>
+  </div>
+
+  <mat-card class="mb-6">
+    <mat-card-content>
+      <div class="flex justify-between items-center mb-4">
+        <mat-form-field appearance="outline" class="w-full max-w-md">
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Search templates..." #input>
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="overflow-auto">
+        <table mat-table [dataSource]="dataSource" matSort class="w-full">
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+            <td mat-cell *matCellDef="let template"> {{template.id}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let template"> {{template.name}} </td>
+          </ng-container>
+
+          <!-- Measure Column -->
+          <ng-container matColumnDef="measure">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Measure </th>
+            <td mat-cell *matCellDef="let template"> {{template.measure}} </td>
+          </ng-container>
+
+          <!-- Type Column -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+            <td mat-cell *matCellDef="let template"> {{template.type}} </td>
+          </ng-container>
+
+          <!-- Created At Column -->
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Created At </th>
+            <td mat-cell *matCellDef="let template"> {{template.createdAt | date:'medium'}} </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let template" class="whitespace-nowrap">
+              <button mat-icon-button color="primary" (click)="viewTemplate(template)" matTooltip="View Details">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button color="accent" (click)="editTemplate(template)" matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteTemplate(template)" matTooltip="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-icon-button color="primary" (click)="createFromTemplate(template)" matTooltip="Create from Template">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center py-4" colspan="6">
+              <ng-container *ngIf="loading; else noData">
+                <mat-spinner diameter="40" class="mx-auto"></mat-spinner>
+                <p class="mt-2">Loading templates...</p>
+              </ng-container>
+              <ng-template #noData>
+                <p>No templates found matching filter: "{{input.value}}"</p>
+              </ng-template>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of templates"></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>
