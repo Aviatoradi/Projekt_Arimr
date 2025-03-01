@@ -1,4 +1,4 @@
-<div class="container mx-auto pb-6">
+<div class="p-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold text-gray-800">
       {{ isEditMode() ? 'Edytuj' : 'Stwórz' }}
@@ -6,112 +6,111 @@
     </h1>
   </div>
 
-  <mat-card>
-    <mat-card-content>
-      <div *ngIf="isLoading()" class="flex justify-center my-4">
-        <mat-spinner diameter="40"></mat-spinner>
-      </div>
+  <div *ngIf="isLoading()" class="flex justify-center my-4">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
 
-      <form
-        [formGroup]="goalForm"
-        (ngSubmit)="onSubmit()"
-        *ngIf="!isLoading()"
-        class="mt-4"
-      >
-        <div class="flex flex-col gap-4">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Nazwa</mat-label>
-            <input
-              matInput
-              formControlName="name"
-              placeholder="Nazwa celu"
-            />
-            <mat-error *ngIf="goalForm.get('name')?.hasError('required')">
-              Nazwa celu jest wymagana
-            </mat-error>
-            <mat-error *ngIf="goalForm.get('name')?.hasError('maxlength')">
-              Nazwa celu nie może przekraczać 100 znaków
-            </mat-error>
-          </mat-form-field>
+  <form
+    [formGroup]="goalForm"
+    (ngSubmit)="onSubmit()"
+    *ngIf="!isLoading()"
+    class="mt-4"
+  >
+    <div class="flex flex-col gap-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Nazwa</mat-label>
+        <input matInput formControlName="name" placeholder="Nazwa celu" />
+        <mat-error *ngIf="goalForm.get('name')?.hasError('required')">
+          Nazwa celu jest wymagana
+        </mat-error>
+        <mat-error *ngIf="goalForm.get('name')?.hasError('maxlength')">
+          Nazwa celu nie może przekraczać 100 znaków
+        </mat-error>
+      </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Miernik</mat-label>
-            <textarea
-              matInput
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="4"
-              formControlName="measure"
-              placeholder="Wpisz miernik - algorytm"
-            ></textarea>
-            <mat-error *ngIf="goalForm.get('measure')?.hasError('required')">
-              Miernik jest wymagany
-            </mat-error>
-          </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Miernik</mat-label>
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="4"
+          formControlName="measure"
+          placeholder="Wpisz miernik - algorytm"
+        ></textarea>
+        <mat-error *ngIf="goalForm.get('measure')?.hasError('required')">
+          Miernik jest wymagany
+        </mat-error>
+      </mat-form-field>
 
-<!--          <mat-form-field appearance="outline" class="w-full">-->
-<!--            <mat-label>Type</mat-label>-->
-<!--            <input-->
-<!--              matInput-->
-<!--              formControlName="type"-->
-<!--              placeholder="Enter goal type"-->
-<!--            />-->
-<!--            <mat-error *ngIf="goalForm.get('type')?.hasError('required')">-->
-<!--              Type is required-->
-<!--            </mat-error>-->
-<!--            <mat-error *ngIf="goalForm.get('type')?.hasError('maxlength')">-->
-<!--              Type cannot exceed 100 characters-->
-<!--            </mat-error>-->
-<!--          </mat-form-field>-->
+      <!--          <mat-form-field appearance="outline" class="w-full">-->
+      <!--            <mat-label>Type</mat-label>-->
+      <!--            <input-->
+      <!--              matInput-->
+      <!--              formControlName="type"-->
+      <!--              placeholder="Enter goal type"-->
+      <!--            />-->
+      <!--            <mat-error *ngIf="goalForm.get('type')?.hasError('required')">-->
+      <!--              Type is required-->
+      <!--            </mat-error>-->
+      <!--            <mat-error *ngIf="goalForm.get('type')?.hasError('maxlength')">-->
+      <!--              Type cannot exceed 100 characters-->
+      <!--            </mat-error>-->
+      <!--          </mat-form-field>-->
 
-          <div class="flex flex-col space-y-6">
-            <mat-checkbox formControlName="isTemplate">
-              Szablon
-            </mat-checkbox>
+      <div class="flex flex-col space-y-6">
+        <mat-checkbox
+          formControlName="isTemplate"
+          *ngIf="!this.goalDialogData().isTemplate"
+        >
+          Szablon
+        </mat-checkbox>
 
-            <mat-form-field
-              appearance="outline"
-              class="w-full"
-              *ngIf="!goalForm.get('isTemplate')?.value"
+        <mat-form-field
+          appearance="outline"
+          class="w-full"
+          *ngIf="!this.goalDialogData().isTemplate"
+        >
+          <mat-label>Department</mat-label>
+          <mat-select formControlName="departmentId">
+            <mat-option [value]="null">None</mat-option>
+            <mat-option
+              *ngFor="let department of departments()"
+              [value]="department.id"
             >
-              <mat-label>Department</mat-label>
-              <mat-select formControlName="departmentId">
-                <mat-option [value]="null">None</mat-option>
-                <mat-option
-                  *ngFor="let department of departments()"
-                  [value]="department.id"
-                >
-                  {{ department.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+              {{ department.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full" *ngIf="!goalForm.get('isTemplate')?.value">
-              <mat-label>Stwórz na podstawie szablonu</mat-label>
-              <mat-select formControlName="parentGoalId">
-                <mat-option [value]="null">Brak</mat-option>
-                <mat-option
-                  *ngFor="let template of goalTemplates()"
-                  [value]="template.id"
-                >
-                  {{ template.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </div>
+        <!--            <mat-form-field-->
+        <!--              appearance="outline"-->
+        <!--              class="w-full"-->
+        <!--              *ngIf="!goalForm.get('isTemplate')?.value"-->
+        <!--            >-->
+        <!--              <mat-label>Stwórz na podstawie szablonu</mat-label>-->
+        <!--              <mat-select formControlName="parentGoalId">-->
+        <!--                <mat-option [value]="null">Brak</mat-option>-->
+        <!--                <mat-option-->
+        <!--                  *ngFor="let template of goalTemplates()"-->
+        <!--                  [value]="template.id"-->
+        <!--                >-->
+        <!--                  {{ template.name }}-->
+        <!--                </mat-option>-->
+        <!--              </mat-select>-->
+        <!--            </mat-form-field>-->
+      </div>
+    </div>
 
-        <div class="flex justify-end mt-6 space-x-4">
-          <button type="button" mat-button (click)="onCancel()">Wróć</button>
-          <button
-            type="submit"
-            mat-raised-button
-            color="primary"
-            [disabled]="goalForm.invalid"
-          >
-            {{ isEditMode() ? 'Zapisz' : 'Stwórz' }}
-          </button>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+    <div class="flex justify-end mt-6 space-x-4">
+      <button type="button" mat-button mat-dialog-close="null">Wróć</button>
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="goalForm.invalid"
+      >
+        {{ isEditMode() ? 'Zapisz' : 'Stwórz' }}
+      </button>
+    </div>
+  </form>
 </div>

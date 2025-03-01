@@ -4,7 +4,6 @@ import {
   computed,
   effect,
   inject,
-  input,
   signal,
 } from '@angular/core';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -22,24 +21,27 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { NgForOf, NgIf } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { DepartmentDto, GoalDto } from '../dtos';
-import { forkJoin } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of } from "rxjs";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GoalsService } from '../services/goals.service';
 import { DepartmentsService } from '../services/departments.service';
-import {
-  takeUntilDestroyed,
-  toObservable,
-  toSignal,
-} from '@angular/core/rxjs-interop';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { GoalTypeEnum } from '../goal-type.enum';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogClose,
+  MatDialogRef,
+} from '@angular/material/dialog';
+
+export interface GoalDialogData {
+  mode: 'edit' | 'create';
+  goalId?: number;
+  isTemplate?: boolean;
+}
 
 @Component({
   selector: 'app-create-goal-form',
   imports: [
-    MatCard,
-    MatCardContent,
     ReactiveFormsModule,
     MatFormField,
     MatCheckbox,
@@ -53,6 +55,7 @@ import { GoalTypeEnum } from '../goal-type.enum';
     MatInput,
     NgForOf,
     CdkTextareaAutosize,
+    MatDialogClose,
   ],
   templateUrl: './create-goal-form.component.html',
   styleUrl: './create-goal-form.component.scss',
@@ -60,32 +63,36 @@ import { GoalTypeEnum } from '../goal-type.enum';
   standalone: true,
 })
 export class CreateGoalFormComponent {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private dialogRef = inject(
+    MatDialogRef<CreateGoalFormComponent, GoalDto | null>
+  );
+  private dialogData: GoalDialogData = inject(MAT_DIALOG_DATA);
   private goalsService = inject(GoalsService);
   private departmentsService = inject(DepartmentsService);
   private snackBar = inject(MatSnackBar);
+
+  // Expose enum to template
+  GoalTypeEnum = GoalTypeEnum;
 
   // Signals
   departments = signal<DepartmentDto[]>([]);
   goalTemplates = signal<GoalDto[]>([]);
   isLoading = signal<boolean>(false);
-  isEditMode = signal<boolean>(false);
-  goalId = signal<number | null>(null);
+  isEditMode = signal<boolean>(this.dialogData.mode === 'edit');
+  goalId = signal<number | null>(this.dialogData.goalId || null);
+  goalDialogData = signal(this.dialogData);
 
   // Form controls with signals
   nameControl = new FormControl('', [
     Validators.required,
     Validators.maxLength(100),
   ]);
-  measureControl = new FormControl('', [
-    Validators.required,
-  ]);
+  measureControl = new FormControl('', [Validators.required]);
   typeControl = new FormControl(GoalTypeEnum.Operational, [
     Validators.required,
     Validators.maxLength(100),
   ]);
-  isTemplateControl = new FormControl(false);
+  isTemplateControl = new FormControl(this.dialogData.isTemplate || false);
   departmentIdControl = new FormControl<number | null>(null);
   parentGoalIdControl = new FormControl<number | null>(null);
 
@@ -101,33 +108,16 @@ export class CreateGoalFormComponent {
   isFormValid = computed(() => this.goalForm.valid);
 
   constructor() {
-    // Initialize from route params
-    this.initFromRouteParams();
-
     // Load data
     this.loadFormDependencies();
 
     // Setup effects
     this.setupFormEffects();
-  }
 
-  private initFromRouteParams(): void {
-    // Handle query params
-    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((params) => {
-      if (params['isTemplate']) {
-        this.isTemplateControl.setValue(true);
-      }
-    });
-
-    // Handle route params for edit mode
-    this.route.params.pipe(takeUntilDestroyed()).subscribe((params) => {
-      console.log(params);
-      if (params['id']) {
-        this.isEditMode.set(true);
-        this.goalId.set(+params['id']);
-        this.loadGoalData();
-      }
-    });
+    // Load goal data if in edit mode
+    if (this.isEditMode() && this.goalId()) {
+      this.loadGoalData();
+    }
   }
 
   private setupFormEffects(): void {
@@ -136,7 +126,7 @@ export class CreateGoalFormComponent {
 
       if (isTemplate) {
         this.departmentIdControl.setValue(null);
-        // this.departmentIdControl.disable();
+        this.departmentIdControl.disable();
       } else {
         this.departmentIdControl.enable();
       }
@@ -147,6 +137,9 @@ export class CreateGoalFormComponent {
     this.isLoading.set(true);
 
     forkJoin({
+      // editingGoal: this.isEditMode()
+      //   ? this.goalsService.getGoalById(this.goalId())
+      //   : of(null),
       departments: this.departmentsService.getAllDepartments(),
       templates: this.goalsService.getGoalTemplates(),
     }).subscribe({
@@ -188,6 +181,7 @@ export class CreateGoalFormComponent {
           duration: 3000,
         });
         this.isLoading.set(false);
+        this.dialogRef.close(null);
       },
     });
   }
@@ -221,16 +215,11 @@ export class CreateGoalFormComponent {
       next: (goal) => {
         this.isLoading.set(false);
         this.snackBar.open(
-          `Goal ${this.isEditMode() ? 'updated' : 'created'} successfully`,
+          `Cel ${this.isEditMode() ? 'zaaktualizwaony' : 'utworzony'} pomyślnie`,
           'Close',
           { duration: 3000 }
         );
-
-        if (goal.isTemplate) {
-          this.router.navigate(['/app/admin/goal-templates']);
-        } else {
-          this.router.navigate(['/goals', goal.id]);
-        }
+        this.dialogRef.close(goal);
       },
       error: (error) => {
         console.error(
@@ -245,13 +234,5 @@ export class CreateGoalFormComponent {
         this.isLoading.set(false);
       },
     });
-  }
-
-  onCancel(): void {
-    if (this.isEditMode() && this.goalId()) {
-      this.router.navigate(['/goals', this.goalId()]);
-    } else {
-      this.router.navigate(['/app/admin/goal-templates']);
-    }
   }
 }

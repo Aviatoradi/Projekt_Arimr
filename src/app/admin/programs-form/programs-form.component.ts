@@ -74,7 +74,7 @@ export class ProgramsFormComponent implements OnInit {
   }
 
   get submitButtonText(): string {
-    return this.data.mode === 'create' ? 'Zapisz zmiany' : 'Utwórz program';
+    return this.data.mode === 'edit' ? 'Zapisz zmiany' : 'Utwórz program';
   }
 
   get isEditing(): boolean {

@@ -1,27 +1,37 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
-import { GoalDto } from "../dtos";
-import { MatButton, MatIconButton } from "@angular/material/button";
-import { MatCard, MatCardContent } from "@angular/material/card";
-import { MatFormField, MatLabel } from "@angular/material/form-field";
-import { MatIcon } from "@angular/material/icon";
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { GoalDto } from '../dtos';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import {
   MatCell,
   MatCellDef,
   MatColumnDef,
   MatHeaderCell,
   MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef, MatNoDataRow, MatRow, MatRowDef,
-  MatTable, MatTableDataSource,
-} from "@angular/material/table";
-import { MatSort } from "@angular/material/sort";
-import { DatePipe, NgIf } from "@angular/common";
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { MatInput } from "@angular/material/input";
-import { MatPaginator } from "@angular/material/paginator";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
-import { GoalsService } from "../services/goals.service";
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatNoDataRow,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource,
+} from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { DatePipe, NgIf } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatInput } from '@angular/material/input';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { GoalsService } from '../services/goals.service';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { CreateGoalFormComponent } from '../create-goal-form/create-goal-form.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { CreateGoalFromTemplateComponent } from '../create-goal-from-template/create-goal-from-template.component';
+import { GoalTypeEnum } from "../goal-type.enum";
 
 @Component({
   selector: 'app-goal-templates',
@@ -50,6 +60,9 @@ import { GoalsService } from "../services/goals.service";
     MatInput,
     MatLabel,
     MatPaginator,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuItem,
   ],
   templateUrl: './goal-templates.component.html',
   styleUrl: './goal-templates.component.scss',
@@ -112,59 +125,93 @@ export class GoalTemplatesComponent {
     }
   }
 
-  createNewTemplate(): void {
-    this.router.navigate(['/app/admin/goals/create'], {
-      queryParams: { isTemplate: true },
+  create(): void {
+    const dialogRef = this.dialog.open(CreateGoalFormComponent, {
+      minWidth: 600,
+      data: {
+        isTemplate: true,
+        mode: 'create',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((goal) => {
+      if (goal) {
+        this.loadGoalTemplates();
+      }
     });
   }
 
   editTemplate(template: GoalDto): void {
-    this.router.navigate([`/goals/edit/${template.id}`]);
+    const dialogRef = this.dialog.open(CreateGoalFormComponent, {
+      minWidth: 600,
+      data: {
+        isTemplate: true,
+        mode: 'edit',
+        goalId: template.id,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((goal) => {
+      if (goal) {
+        this.loadGoalTemplates();
+      }
+    });
   }
 
   viewTemplate(template: GoalDto): void {
     this.router.navigate([`/goals/${template.id}`]);
   }
 
-  deleteTemplate(template: GoalDto): void {
-    //   const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-    //     width: '400px',
-    //     data: {
-    //       title: 'Delete Goal Template',
-    //       message: `Are you sure you want to delete the template "${template.name}"?`,
-    //       confirmText: 'Delete',
-    //       cancelText: 'Cancel'
-    //     }
-    //   });
-    //
-    //   dialogRef.afterClosed().subscribe(result => {
-    //     if (result) {
-    //       this.goalsService.deleteGoal(template.id).subscribe({
-    //         next: () => {
-    //           this.snackBar.open('Goal template deleted successfully', 'Close', { duration: 3000 });
-    //           this.loadGoalTemplates();
-    //         },
-    //         error: (error) => {
-    //           console.error('Error deleting goal template', error);
-    //           this.snackBar.open('Failed to delete goal template', 'Close', { duration: 3000 });
-    //         }
-    //       });
-    //     }
-    //   });
+  deleteGoalTemplate(template: GoalDto): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Usuń szablon celu',
+        message: `Czy na pewno chcesz usunąć szablon "${template.name}"?`,
+        confirmText: 'Usuń',
+        cancelText: 'Anuluj',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.goalsService.deleteGoal(template.id).subscribe({
+          next: () => {
+            this.snackBar.open(
+              'Szablon celu został pomyślnie usunięty',
+              'Zamknij',
+              { duration: 3000 }
+            );
+            this.loadGoalTemplates();
+          },
+          error: (error) => {
+            console.error('Błąd podczas usuwania szablonu celu', error);
+            this.snackBar.open(
+              'Nie udało się usunąć szablonu celu',
+              'Zamknij',
+              { duration: 3000 }
+            );
+          },
+        });
+      }
+    });
   }
 
-  // createFromTemplate(template: GoalDto): void {
-  //   const dialogRef = this.dialog.open(CreateFromTemplateComponent, {
-  //     width: '500px',
-  //     data: { templateId: template.id },
-  //   });
-  //
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     if (result) {
-  //       this.snackBar.open('Goal created from template successfully', 'Close', {
-  //         duration: 3000,
-  //       });
-  //     }
-  //   });
-  // }
+  createFromTemplate(template: GoalDto): void {
+    const dialogRef = this.dialog.open(CreateGoalFromTemplateComponent, {
+      width: '500px',
+      data: { templateId: template.id },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.snackBar.open('Goal created from template successfully', 'Close', {
+          duration: 3000,
+        });
+      }
+    });
+  }
+  show() {}
+
+  protected readonly GoalTypeEnum = GoalTypeEnum;
 }
