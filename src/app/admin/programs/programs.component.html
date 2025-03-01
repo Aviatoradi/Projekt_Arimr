@@ -1,0 +1,98 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Programy</h1>
+      <p class="text-gray-600">Zarządzaj programami i przypisuj je do celów</p>
+    </div>
+    <button
+      mat-raised-button
+      color="primary"
+      class="flex items-center"
+      (click)="openCreateProgramDialog()">
+      <mat-icon class="mr-2">add</mat-icon>
+      Dodaj nowy program
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+      <p>{{ error() }}</p>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="flex justify-center my-12">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else if (programs().length === 0) {
+    <mat-card class="p-6 text-center bg-gray-50">
+      <mat-icon class="text-gray-400 text-6xl mb-2">folder_open</mat-icon>
+      <h2 class="text-xl font-medium mb-2">Brak programów</h2>
+      <p class="text-gray-600 mb-4">Nie znaleziono żadnych programów w systemie.</p>
+      <button mat-raised-button color="primary" (click)="openCreateProgramDialog()">
+        Utwórz pierwszy program
+      </button>
+    </mat-card>
+  } @else {
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <table mat-table [dataSource]="programs()" class="w-full">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50"> ID </th>
+          <td mat-cell *matCellDef="let program"> {{ program.id }} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50"> Nazwa programu </th>
+          <td mat-cell *matCellDef="let program" class="font-medium"> {{ program.name }} </td>
+        </ng-container>
+
+        <!-- Goal Column -->
+        <ng-container matColumnDef="goalName">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50"> Przypisany cel </th>
+          <td mat-cell *matCellDef="let program">
+            <span [ngClass]="{'text-yellow-600': !program.goal}">
+              {{ getGoalName(program) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-right"> Akcje </th>
+          <td mat-cell *matCellDef="let program" class="text-right whitespace-nowrap">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="Wyświetl szczegóły"
+              (click)="viewProgramDetails(program)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="accent"
+              matTooltip="Edytuj program"
+              (click)="openEditProgramDialog(program)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Usuń program"
+              (click)="deleteProgram(program)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let program; columns: displayedColumns;"
+          class="hover:bg-gray-50 transition-colors duration-150 ease-in-out">
+        </tr>
+      </table>
+    </div>
+  }
+</div>

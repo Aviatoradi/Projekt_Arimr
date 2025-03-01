@@ -37,7 +37,7 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'admin/goal-templates',
+        path: 'admin/goals',
         loadComponent: () =>
           import('./admin/goal-templates/goal-templates.component').then(
             (c) => c.GoalTemplatesComponent
@@ -48,6 +48,27 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./admin/create-goal-form/create-goal-form.component').then(
             (c) => c.CreateGoalFormComponent
+          ),
+      },
+      {
+        path: 'admin/programs',
+        loadComponent: () =>
+          import('./admin/programs/programs.component').then(
+            (c) => c.ProgramsComponent
+          ),
+      },
+      {
+        path: 'admin/interventions',
+        loadComponent: () =>
+          import('./admin/interventions/interventions.component').then(
+            (c) => c.InterventionsComponent
+          ),
+      },
+      {
+        path: 'admin/intakes',
+        loadComponent: () =>
+          import('./admin/intakes/intakes.component').then(
+            (c) => c.IntakesComponent
           ),
       },
       { path: 'goals', component: GoalEditorComponent },

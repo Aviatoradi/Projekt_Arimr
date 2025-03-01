@@ -31,7 +31,7 @@ interface NavItem {
 })
 export class SidebarComponent {
   private readonly authService = inject(AuthService);
-  readonly user = toSignal(this.authService.user$);
+  readonly user = toSignal(this.authService.user$, { requireSync: true });
 
   // Store expanded state for each parent item
   expandedItems = signal<Set<string>>(new Set());
@@ -61,14 +61,28 @@ export class SidebarComponent {
 
   readonly adminItems: NavItem[] = [
     {
-      // path: '/admin/dashboard',
       icon: 'admin_panel_settings',
       label: 'Panel administratora',
       children: [
         {
-          path: '/app/admin/goal-templates',
-          icon: 'people',
-          label: 'Szablony',
+          path: '/app/admin/goals',
+          icon: 'flag',
+          label: 'Cele',
+        },
+        {
+          path: '/app/admin/programs',
+          icon: 'map',
+          label: 'Programy',
+        },
+        {
+          path: '/app/admin/interventions',
+          icon: 'travel_explore',
+          label: 'Interwencje',
+        },
+        {
+          path: '/app/admin/intakes',
+          icon: 'calendar_month',
+          label: 'Nabory',
         },
       ],
     },

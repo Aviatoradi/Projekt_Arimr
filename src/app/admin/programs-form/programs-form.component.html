@@ -1,0 +1,57 @@
+<div class="p-6">
+  <h2 mat-dialog-title class="text-xl font-bold mb-4">{{ dialogTitle }}</h2>
+
+  @if (loading()) {
+    <div class="flex justify-center p-6">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else {
+    <form [formGroup]="programForm" (ngSubmit)="onSubmit()">
+      <mat-dialog-content>
+        @if (error()) {
+          <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+            <p>{{ error() }}</p>
+          </div>
+        }
+
+        <div class="mb-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Nazwa programu</mat-label>
+            <input matInput formControlName="name" placeholder="Wprowadź nazwę programu">
+            <mat-error *ngIf="programForm.get('name')?.hasError('required')">
+              Nazwa programu jest wymagana
+            </mat-error>
+            <mat-error *ngIf="programForm.get('name')?.hasError('maxlength')">
+              Nazwa programu nie może być dłuższa niż 100 znaków
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Cel</mat-label>
+            <mat-select formControlName="goalId">
+              @for (goal of availableGoals(); track goal.id) {
+                <mat-option [value]="goal.id">{{ goal.name }}</mat-option>
+              }
+            </mat-select>
+            <mat-error *ngIf="programForm.get('goalId')?.hasError('required')">
+              Wybór celu jest wymagany
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-dialog-content>
+
+      <mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="onCancel()">Anuluj</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="programForm.invalid || loading()">
+          {{ submitButtonText }}
+        </button>
+      </mat-dialog-actions>
+    </form>
+  }
+</div>

@@ -27,10 +27,10 @@
               placeholder="Nazwa celu"
             />
             <mat-error *ngIf="goalForm.get('name')?.hasError('required')">
-              Name is required
+              Nazwa celu jest wymagana
             </mat-error>
             <mat-error *ngIf="goalForm.get('name')?.hasError('maxlength')">
-              Name cannot exceed 100 characters
+              Nazwa celu nie może przekraczać 100 znaków
             </mat-error>
           </mat-form-field>
 
