@@ -1,0 +1,160 @@
+<!-- manage-intakes-dialog.component.html -->
+<div class="p-6 max-w-2xl">
+  <div class="flex justify-between items-center mb-4">
+    <h2 mat-dialog-title class="text-xl font-bold text-gray-800">
+      Zarządzanie naborami - {{ data.intervention.name }}
+    </h2>
+<!--    <button-->
+<!--      *ngIf="!isEditing()"-->
+<!--      mat-raised-button-->
+<!--      color="primary"-->
+<!--      (click)="showAddForm()"-->
+<!--      class="bg-blue-600 hover:bg-blue-700"-->
+<!--    >-->
+<!--      <mat-icon>add</mat-icon>-->
+<!--      Dodaj nabór-->
+<!--    </button>-->
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error()" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+    <p>{{ error() }}</p>
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading()" class="flex justify-center my-6">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <mat-dialog-content class="mat-typography">
+    <!-- Form view -->
+    <div *ngIf="isEditing() && !loading()" class="bg-white rounded-lg shadow p-4">
+      <h3 class="text-lg font-medium mb-4">
+        {{ selectedIntake() ? 'Edytuj nabór' : 'Dodaj nowy nabór' }}
+      </h3>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="space-y-4">
+          <!-- Name Field -->
+          <mat-form-field class="w-full">
+            <mat-label>Nazwa naboru</mat-label>
+            <input matInput formControlName="name" placeholder="Podaj nazwę naboru">
+            <mat-error *ngIf="form.get('name')?.hasError('required')">
+              Nazwa jest wymagana
+            </mat-error>
+            <mat-error *ngIf="form.get('name')?.hasError('maxlength')">
+              Nazwa może mieć maksymalnie 100 znaków
+            </mat-error>
+          </mat-form-field>
+
+          <!-- End Date Field -->
+          <mat-form-field class="w-full">
+            <mat-label>Data zakończenia naboru</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="endDate"
+              placeholder="Wybierz datę zakończenia"
+              [min]="minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="form.get('endDate')?.hasError('required')">
+              Data zakończenia jest wymagana
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Hidden fields -->
+          <input type="hidden" formControlName="interventionId">
+          <input type="hidden" formControlName="id">
+        </div>
+
+        <div class="flex justify-end space-x-2 mt-6">
+          <button
+            mat-button
+            type="button"
+            (click)="cancelEdit()"
+            class="text-gray-700 hover:bg-gray-100"
+          >
+            Anuluj
+          </button>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="form.invalid"
+            class="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            {{ selectedIntake() ? 'Zapisz zmiany' : 'Dodaj' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- List view -->
+    <div *ngIf="!isEditing() && !loading()">
+      <!-- No data message -->
+      <div *ngIf="intakes().length === 0" class="text-center py-8 bg-gray-50 rounded-lg">
+        <p class="text-gray-500">Brak naborów dla tej interwencji</p>
+      </div>
+
+      <!-- Intakes list -->
+      <div *ngIf="intakes().length > 0" class="space-y-3">
+        <div
+          *ngFor="let intake of intakes()"
+          class="bg-white rounded-lg shadow p-4 border-l-4"
+          [ngClass]="isIntakeActive(intake) ? 'border-green-500' : 'border-gray-300'"
+        >
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="flex items-center space-x-2">
+                <h3 class="font-medium">{{ intake.name }}</h3>
+                <span *ngIf="isIntakeActive(intake)" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Aktywny
+                </span>
+                <span *ngIf="!isIntakeActive(intake)" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  Termin minął
+                </span>
+              </div>
+              <p class="text-sm text-gray-600 mt-1">
+                Data zakończenia: {{ intake.endDate | date:'dd.MM.yyyy' }}
+              </p>
+              <p class="text-xs text-gray-500 mt-1">
+                Utworzono: {{ intake.createdAt | date:'dd.MM.yyyy' }}
+              </p>
+            </div>
+            <div class="flex space-x-1">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="showEditForm(intake)"
+                class="text-blue-600"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="confirmDelete(intake)"
+                class="text-red-600"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="mt-4">
+    <button
+      *ngIf="!isEditing()"
+      mat-button
+      (click)="closeDialog()"
+      class="text-gray-700"
+    >
+      Zamknij
+    </button>
+  </mat-dialog-actions>
+</div>

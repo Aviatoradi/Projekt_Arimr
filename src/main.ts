@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { inject, LOCALE_ID, provideAppInitializer } from "@angular/core";
+import { importProvidersFrom, inject, LOCALE_ID, provideAppInitializer } from "@angular/core";
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app/app.routes';
 import {
@@ -20,6 +20,7 @@ import localePl from '@angular/common/locales/pl';
 import localePlExtra from '@angular/common/locales/extra/pl';
 
 import { registerLocaleData } from "@angular/common";
+import { MatNativeDateModule } from "@angular/material/core";
 
 registerLocaleData(localePl, 'pl-PL', localePlExtra);
 
@@ -45,7 +46,6 @@ export const jwtTokenInterceptor: HttpInterceptorFn = (
 
   const token = cookieService.get('Auth-Token');
 
-  console.log(token);
   if (!token) {
     return next(httpRequest);
   }
@@ -60,6 +60,7 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([jwtTokenInterceptor])),
     provideAnimations(),
+    importProvidersFrom(MatNativeDateModule),
     { provide: LOCALE_ID, useValue: 'pl-PL' },
     {
       provide: API_URL,
