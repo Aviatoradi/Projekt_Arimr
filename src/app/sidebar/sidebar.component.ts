@@ -66,8 +66,13 @@ export class SidebarComponent {
       children: [
         {
           path: '/app/admin/goals',
+          icon: 'library_add',
+          label: 'Szablony celów',
+        },
+        {
+          path: '/app/admin/department-goals',
           icon: 'flag',
-          label: 'Cele',
+          label: 'Cele departamentów',
         },
         {
           path: '/app/admin/programs',

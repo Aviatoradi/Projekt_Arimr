@@ -1,0 +1,9 @@
+<mat-form-field class="w-full">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select [value]="selectedDepartmentId" (selectionChange)="onSelectionChange($event.value)">
+    <mat-option [value]="null">{{ allLabel }}</mat-option>
+    @for (dept of departments; track dept.id) {
+      <mat-option [value]="dept.id">{{ dept.name }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>

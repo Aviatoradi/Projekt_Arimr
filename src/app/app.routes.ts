@@ -71,6 +71,13 @@ export const routes: Routes = [
             (c) => c.IntakesComponent
           ),
       },
+      {
+        path: 'admin/department-goals',
+        loadComponent: () =>
+          import('./admin/department-goals/departments-goals.component').then(
+            (c) => c.DepartmentsGoalsComponent
+          ),
+      },
       { path: 'goals', component: GoalEditorComponent },
       { path: 'tasks', component: TaskViewComponent },
       { path: 'custom-goal', component: CustomGoalComponent },
