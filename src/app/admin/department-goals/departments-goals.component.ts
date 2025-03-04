@@ -21,6 +21,11 @@ import { DepartmentFilterComponent } from '../department-filter/department-filte
 import { DepartmentDto, GoalDto } from '../dtos';
 import { DepartmentsService } from '../services/departments.service';
 import { CommonModule } from '@angular/common';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { CreateGoalFormComponent } from '../create-goal-form/create-goal-form.component';
 
 @Component({
   selector: 'app-departments-goals',
@@ -35,6 +40,9 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     MatIconModule,
     DepartmentFilterComponent,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
   ],
   templateUrl: './departments-goals.component.html',
 })
@@ -43,6 +51,8 @@ export class DepartmentsGoalsComponent implements OnInit {
   private router = inject(Router);
   private departmentsService = inject(DepartmentsService);
   private route = inject(ActivatedRoute);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
   // Signals
   departments = signal<DepartmentDto[]>([]);
@@ -64,7 +74,6 @@ export class DepartmentsGoalsComponent implements OnInit {
     'id',
     'name',
     'measure',
-    'type',
     'department',
     'actions',
   ];
@@ -102,6 +111,41 @@ export class DepartmentsGoalsComponent implements OnInit {
         if (!isNaN(departmentId)) {
           this.selectedDepartmentId.set(departmentId);
         }
+      }
+    });
+  }
+
+  deleteGoalTemplate(template: GoalDto): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Usuń szablon celu',
+        message: `Czy na pewno chcesz usunąć szablon "${template.name}"?`,
+        confirmText: 'Usuń',
+        cancelText: 'Anuluj',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.goalsService.deleteGoal(template.id).subscribe({
+          next: () => {
+            this.snackBar.open(
+              'Szablon celu został pomyślnie usunięty',
+              'Zamknij',
+              { duration: 3000 }
+            );
+            this.loadGoals();
+          },
+          error: (error) => {
+            console.error('Błąd podczas usuwania szablonu celu', error);
+            this.snackBar.open(
+              'Nie udało się usunąć szablonu celu',
+              'Zamknij',
+              { duration: 3000 }
+            );
+          },
+        });
       }
     });
   }
@@ -156,5 +200,38 @@ export class DepartmentsGoalsComponent implements OnInit {
     if (!departmentId) return 'N/A';
     const department = this.departments().find((d) => d.id === departmentId);
     return department ? department.name : 'Unknown';
+  }
+
+  create(): void {
+    const dialogRef = this.dialog.open(CreateGoalFormComponent, {
+      minWidth: 600,
+      data: {
+        isTemplate: false,
+        mode: 'create',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((goal) => {
+      if (goal) {
+        this.loadGoals();
+      }
+    });
+  }
+
+  editGoal(goal: GoalDto): void {
+    const dialogRef = this.dialog.open(CreateGoalFormComponent, {
+      minWidth: 600,
+      data: {
+        isTemplate: false,
+        mode: 'edit',
+        goalId: goal.id,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((goal) => {
+      if (goal) {
+        this.loadGoals();
+      }
+    });
   }
 }
