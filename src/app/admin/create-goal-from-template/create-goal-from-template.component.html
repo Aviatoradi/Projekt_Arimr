@@ -1,1 +1,86 @@
-<p>create-goal-from-template works!</p>
+<div class="p-6 max-w-2xl">
+  <h2 class="text-xl font-bold mb-4">Utwórz cel na podstawie szablonu</h2>
+
+  <div class="mb-6 p-4 bg-blue-50 rounded-md">
+    <p class="text-gray-700 mb-4">
+      Parametry będzie można edytować po skopiowaniu celu. Skopiowane zostaną:
+      <br />
+      - Programy
+      <br />
+      - Interwencje
+      <br />
+      - Nabory
+    </p>
+    <h3 class="font-semibold mb-2">Szablon: {{ data.goal.name }}</h3>
+    <p class="text-sm text-gray-600 whitespace-pre-line">Miara: <br>{{ data.goal.measure }}</p>
+  </div>
+
+  <form [formGroup]="goalForm" (ngSubmit)="onSubmit()">
+    <div class="space-y-4">
+      <!--      <mat-form-field appearance="outline" class="w-full">-->
+      <!--        <mat-label>Nazwa celu</mat-label>-->
+      <!--        <input-->
+      <!--          matInput-->
+      <!--          formControlName="name"-->
+      <!--          placeholder="Wprowadź nazwę celu"-->
+      <!--          required-->
+      <!--        />-->
+      <!--        <mat-error *ngIf="goalForm.get('name')?.hasError('required')">-->
+      <!--          Nazwa celu jest wymagana-->
+      <!--        </mat-error>-->
+      <!--      </mat-form-field>-->
+
+      <!--      <mat-form-field appearance="outline" class="w-full">-->
+      <!--        <mat-label>Miara</mat-label>-->
+      <!--        <input-->
+      <!--          matInput-->
+      <!--          formControlName="measure"-->
+      <!--          placeholder="Wprowadź miarę celu"-->
+      <!--          required-->
+      <!--        />-->
+      <!--        <mat-error *ngIf="goalForm.get('measure')?.hasError('required')">-->
+      <!--          Miara celu jest wymagana-->
+      <!--        </mat-error>-->
+      <!--      </mat-form-field>-->
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Departament</mat-label>
+              <mat-select formControlName="departmentId" required>
+                <mat-option *ngFor="let dept of departments()" [value]="dept.id">
+                  {{ dept.name }} {{ dept.fullName ? '- ' + dept.fullName : '' }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="goalForm.get('departmentId')?.hasError('required')">
+                Wybór departamentu jest wymagany
+              </mat-error>
+            </mat-form-field>
+    </div>
+
+    <div class="flex justify-end space-x-3 mt-6">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="text-gray-700"
+        [disabled]="isSubmitting()"
+      >
+        Anuluj
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="goalForm.invalid || isSubmitting()"
+        class="px-6"
+      >
+        <div class="flex items-center">
+          <span *ngIf="!isSubmitting()">Utwórz cel</span>
+          <span *ngIf="isSubmitting()" class="flex items-center">
+            <mat-spinner diameter="20" class="mr-2"></mat-spinner>
+            Tworzenie...
+          </span>
+        </div>
+      </button>
+    </div>
+  </form>
+</div>

@@ -30,8 +30,8 @@ import { GoalsService } from '../services/goals.service';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { CreateGoalFormComponent } from '../create-goal-form/create-goal-form.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { CreateGoalFromTemplateComponent } from '../create-goal-from-template/create-goal-from-template.component';
-import { GoalTypeEnum } from "../goal-type.enum";
+import { GoalTypeEnum } from '../goal-type.enum';
+import { CreateGoalFromTemplateComponent } from "../create-goal-from-template/create-goal-from-template.component";
 
 @Component({
   selector: 'app-goal-templates',
@@ -199,8 +199,8 @@ export class GoalTemplatesComponent {
 
   createFromTemplate(template: GoalDto): void {
     const dialogRef = this.dialog.open(CreateGoalFromTemplateComponent, {
-      width: '500px',
-      data: { templateId: template.id },
+      width: '650px',
+      data: { goal: template },
     });
 
     dialogRef.afterClosed().subscribe((result) => {

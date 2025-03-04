@@ -70,14 +70,7 @@
 
           <mat-menu #menu="matMenu" xPosition="before" class="min-w-[200px]">
             <ng-container>
-              <button mat-menu-item (click)="show()">
-                <mat-icon class="text-blue-600">visibility</mat-icon>
-                <span>Sprawdź</span>
-              </button>
-            </ng-container>
-
-            <ng-container>
-              <button mat-menu-item (click)="create()">
+              <button mat-menu-item (click)="createFromTemplate(template)">
                 <mat-icon class="text-green-600">content_copy</mat-icon>
                 <span>Stwórz na podstawie szablonu</span>
               </button>

@@ -84,11 +84,11 @@ export class SidebarComponent {
           icon: 'travel_explore',
           label: 'Interwencje',
         },
-        {
-          path: '/app/admin/intakes',
-          icon: 'calendar_month',
-          label: 'Nabory',
-        },
+        // {
+        //   path: '/app/admin/intakes',
+        //   icon: 'calendar_month',
+        //   label: 'Nabory',
+        // },
       ],
     },
   ];
