@@ -4,11 +4,11 @@ import {
   CreateProgramDto,
   UpdateProgramDto,
   GoalDto,
-} from '../dtos';
+} from '../admin/dtos';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { map, Observable, of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { HttpAbstract } from '../../core/http-abstract';
+import { HttpAbstract } from '../core/http-abstract';
 
 @Injectable()
 export class ProgramsService extends HttpAbstract {

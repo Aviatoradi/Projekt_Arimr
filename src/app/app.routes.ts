@@ -30,6 +30,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'departments/:departmentId/goals/:goalId',
+        loadComponent: () =>
+          import('./goal-details/goal-details.component').then(
+            (c) => c.GoalDetailsComponent
+          ),
+      },
+      {
         path: 'admin',
         loadComponent: () =>
           import('./admin/admin-panel/admin-panel.component').then(

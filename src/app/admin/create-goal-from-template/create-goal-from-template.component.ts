@@ -17,8 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { DepartmentDto, GoalDto } from '../dtos';
-import { GoalsService } from '../services/goals.service';
-import { DepartmentsService } from '../services/departments.service';
+import { GoalsService } from '../../services/goals.service';
+import { DepartmentsService } from '../../services/departments.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 

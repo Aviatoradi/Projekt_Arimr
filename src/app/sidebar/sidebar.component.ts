@@ -42,21 +42,21 @@ export class SidebarComponent {
       icon: 'dashboard',
       label: 'Dashboard',
     },
-    {
-      path: '/app/goals',
-      icon: 'flag',
-      label: 'Cele',
-    },
-    {
-      path: '/app/custom-goal',
-      icon: 'assignment',
-      label: 'Dodaj swój cel',
-    },
-    {
-      path: '/app/tasks',
-      icon: 'settings',
-      label: 'Podsumowanie',
-    },
+    // {
+    //   path: '/app/goals',
+    //   icon: 'flag',
+    //   label: 'Cele',
+    // },
+    // {
+    //   path: '/app/custom-goal',
+    //   icon: 'assignment',
+    //   label: 'Dodaj swój cel',
+    // },
+    // {
+    //   path: '/app/tasks',
+    //   icon: 'settings',
+    //   label: 'Podsumowanie',
+    // },
   ];
 
   readonly adminItems: NavItem[] = [

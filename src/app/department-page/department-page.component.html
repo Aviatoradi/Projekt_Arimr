@@ -1,2 +1,5 @@
-<p class="text-xl font-medium mb-4"> </p>
+<p class="text-xl font-medium mb-4">
+  Departament: {{ departmentDetails?.value().name }}
+</p>
 
+<app-goals-list [departmentId]="id()"></app-goals-list>

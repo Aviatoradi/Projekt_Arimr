@@ -7,11 +7,12 @@ import {
   numberAttribute,
   resource,
 } from '@angular/core';
-import { DepartmentsRepository } from '../departments/departments.repository';
+import { DepartmentsRepository } from '../components/departments/departments.repository';
+import { GoalsListComponent } from "../users/goals-list/goals-list.component";
 
 @Component({
   selector: 'app-department-page',
-  imports: [],
+  imports: [GoalsListComponent],
   templateUrl: './department-page.component.html',
   styleUrl: './department-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,7 +22,7 @@ export class DepartmentPageComponent {
 
   private readonly departmentsRepository = inject(DepartmentsRepository);
 
-  private readonly departmentDetails = resource({
+  readonly departmentDetails = resource({
     request: () => ({
       id: this.id(),
     }),

@@ -1,7 +1,7 @@
 // intervention.service.ts
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { HttpAbstract } from '../../core/http-abstract';
+import { HttpAbstract } from '../core/http-abstract';
 import {
   CreateIntakeDto,
   CreateInterventionDto,
@@ -9,7 +9,7 @@ import {
   InterventionDto,
   UpdateIntakeDto,
   UpdateInterventionDto,
-} from '../dtos';
+} from '../admin/dtos';
 
 @Injectable({
   providedIn: 'root',

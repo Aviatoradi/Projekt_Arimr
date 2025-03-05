@@ -1,0 +1,291 @@
+<div class="container bg-gray-100 mx-auto px-4 py-8">
+  <div *ngIf="loading()" class="flex justify-center my-12">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div
+    *ngIf="error()"
+    class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6"
+    role="alert"
+  >
+    <p>Wystąpił błąd podczas ładowania danych. Spróbuj ponownie później.</p>
+  </div>
+
+  <div *ngIf="!loading() && goal()">
+    <!-- Nawigacja -->
+    <div class="mb-6">
+      <button mat-button color="primary" (click)="navigateBack()">
+        <mat-icon class="mr-1">arrow_back</mat-icon>
+        Powrót do listy celów
+      </button>
+    </div>
+
+    <!-- Szczegóły celu -->
+    <div class="bg-white rounded-lg p-6 mb-6">
+      <h1 class="text-2xl font-bold text-gray-800 mb-4">
+        {{ goal()?.name }}
+      </h1>
+
+      <!-- Banner z miernikiem -->
+      <h3 class="flex items-center gap-2 text-lg font-bold">
+        <mat-icon>info</mat-icon>
+        Algorytm mierzenia celu:
+      </h3>
+      <div class="bg-blue-50 border-l-4 mt-2 border-blue-500 p-4 mb-6">
+        <div class="text-gray-600 whitespace-pre-wrap">
+          {{ goal()?.measure }}
+        </div>
+      </div>
+
+      <!-- Programy -->
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Programy</h2>
+
+      <div *ngIf="programs().length === 0" class="text-gray-500 italic mb-6">
+        Brak programów dla tego celu
+      </div>
+
+      <div
+        class="grid mt-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"
+      >
+        @for (program of programs(); track program.id) {
+          <div
+            [class.border-purple-500]="selectedProgram()?.id === program.id"
+            class="border-gray-800 border-2 transition-shadow bg-white duration-300 p-4 cursor-pointer rounded-2xl"
+            (click)="selectProgram(program)"
+          >
+            <p class="text-lg text-center">{{ program.name }}</p>
+          </div>
+        }
+      </div>
+
+      <!-- Interwencje dla wybranego programu -->
+      <div *ngIf="selectedProgram()">
+        <mat-divider class="my-6"></mat-divider>
+
+        <div class="flex items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-700">
+            Interwencje dla programu: {{ selectedProgram()?.name }}
+          </h2>
+          <button
+            mat-icon-button
+            color="primary"
+            class="ml-2"
+            (click)="deselectProgram()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div
+          *ngIf="interventions().length === 0"
+          class="text-gray-500 italic mb-6"
+        >
+          Brak interwencji dla tego programu
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          @for (intervention of interventions(); track intervention.id) {
+            <div
+              [class.border-purple-500]="
+                selectedIntervention()?.id === intervention.id
+              "
+              class="border-gray-800 border-2 transition-shadow bg-white duration-300 p-4 cursor-pointer rounded-2xl"
+              (click)="selectIntervention(intervention)"
+            >
+              <p class="text-lg text-center">{{ intervention.name }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Nabory dla wybranej interwencji -->
+      <div *ngIf="selectedIntervention()">
+        <mat-divider class="my-6"></mat-divider>
+
+        <div class="flex items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-700">
+            Nabory dla interwencji: {{ selectedIntervention()?.name }}
+          </h2>
+          <button
+            mat-icon-button
+            color="primary"
+            class="ml-2"
+            (click)="deselectIntervention()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div *ngIf="intakes().length === 0" class="text-gray-500 italic mb-6">
+          Brak naborów dla tej interwencji
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          @for (intake of intakes(); track intake.id) {
+            <div
+              [class.border-purple-500]="
+                selectedIntake()?.id === intake.id
+              "
+              class="border-gray-800 border-2 transition-shadow bg-white duration-300 p-4 cursor-pointer rounded-2xl"
+              (click)="selectIntake(intake)"
+            >
+              <div class="relative p-3">
+                <div class="flex justify-end absolute right-0 top-0">
+                  <span
+                    *ngIf="isIntakeFuture(intake)"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                  >
+                    Aktywny
+                  </span>
+                  <span
+                    *ngIf="isIntakePast(intake)"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+                  >
+                    Termin minął
+                  </span>
+                </div>
+              </div>
+              <p class="text-lg text-center">{{ intake.name }}</p>
+              <p class="text-sm text-center">
+                Data zakończenia: {{ intake.endDate | date: 'dd.MM.yyyy' }}
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Formularz dla wybranego naboru -->
+      <div *ngIf="selectedIntake()">
+        <mat-divider class="my-6"></mat-divider>
+
+        <div class="flex items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-700">
+            Wnioski dla naboru: {{ selectedIntake()?.name }}
+          </h2>
+        </div>
+
+        @if (latestApplication(); as application) {
+          <div>
+            <p>
+              <b class="font-bold text-md">Przewidywana ilość wniosków </b>:
+              {{ application.applicationPrediction }}
+            </p>
+            <p class="mt-3">
+              <b class="font-bold text-md">Aktualna ilość wniosków</b>:
+              {{ application.applicationCount }}
+            </p>
+
+            <button
+              class="mt-3"
+              (click)="editIntakeApplication()"
+              mat-raised-button
+            >
+              <mat-icon>edit</mat-icon>
+              Edytuj
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col justify-start">
+            Brak danych dla tego naboru.
+
+            <p class="text-md text-red-400" *ngIf="isSelectedIntakePast()">
+              Nie można zmienić wniosków w zakończonym naborze
+            </p>
+            <button
+              class="mt-4"
+              mat-flat-button
+              [disabled]="this.isSelectedIntakePast()"
+              matTooltip="Nie można zmienić wniosków w zakończonym naborze"
+              [matTooltipDisabled]="this.isSelectedIntakePast()"
+              color="primary"
+              (click)="createApplication()"
+            >
+              <mat-icon>add</mat-icon>
+              Dodaj dane odnośnie wniosków
+            </button>
+          </div>
+        }
+
+        <div *ngIf="isEditing()" class="bg-white rounded-lg shadow p-6">
+          <h3 class="text-lg font-medium mb-4">Formularz wniosków</h3>
+
+          <form [formGroup]="applicationForm" (ngSubmit)="saveApplication()">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Liczba wniosków (przewidywana)</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="applicationPrediction"
+                />
+                <mat-error
+                  *ngIf="
+                    applicationForm
+                      .get('applicationPrediction')
+                      ?.hasError('required')
+                  "
+                >
+                  Pole jest wymagane
+                </mat-error>
+                <mat-error
+                  *ngIf="
+                    applicationForm
+                      .get('applicationPrediction')
+                      ?.hasError('min')
+                  "
+                >
+                  Wartość musi być większa lub równa 0
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Liczba wniosków (wpłynęło)</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="applicationCount"
+                />
+                <mat-error
+                  *ngIf="
+                    applicationForm
+                      .get('applicationCount')
+                      ?.hasError('required')
+                  "
+                >
+                  Pole jest wymagane
+                </mat-error>
+                <mat-error
+                  *ngIf="
+                    applicationForm.get('applicationCount')?.hasError('min')
+                  "
+                >
+                  Wartość musi być większa lub równa 0
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="flex justify-end gap-4">
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="this.isEditing.set(false)"
+              >
+                <mat-icon>cancel</mat-icon>
+                Cofnij
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="applicationForm.invalid || applicationSaving()"
+              >
+                <mat-icon>save</mat-icon>
+                Zapisz
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

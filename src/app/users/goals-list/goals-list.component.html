@@ -1,0 +1,39 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Lista celów</h1>
+  </div>
+
+  <div *ngIf="loading()" class="flex justify-center my-12">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div *ngIf="error()" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+    <p>Wystąpił błąd podczas ładowania celów. Spróbuj ponownie później.</p>
+  </div>
+
+  <div *ngIf="!loading() && !error() && goals().length === 0" class="text-center my-12">
+    <p class="text-gray-500">Brak celów do wyświetlenia</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <mat-card *ngFor="let goal of goals()"
+              class="hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              (click)="navigateToGoalDetails(goal.id)">
+      <mat-card-header>
+        <mat-card-title class="text-lg font-medium text-gray-800">{{ goal.name }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="py-4">
+        <p class="text-gray-600">Typ: {{ goal.type }}</p>
+        <p *ngIf="goal.department" class="text-gray-600">
+          Departament: {{ goal.department?.name }}
+        </p>
+      </mat-card-content>
+      <mat-card-actions class="flex justify-end">
+        <button mat-button color="primary" (click)="navigateToGoalDetails(goal.id); $event.stopPropagation()">
+          <mat-icon class="mr-1">visibility</mat-icon>
+          Szczegóły
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environents/environment';
-import { DepartmentDto } from '../dtos';
+import { environment } from '../../environents/environment';
+import { DepartmentDto, GoalDto } from '../admin/dtos';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +14,10 @@ export class DepartmentsService {
 
   getAllDepartments(): Observable<DepartmentDto[]> {
     return this.http.get<DepartmentDto[]>(`${this.apiUrl}/all`);
+  }
+
+  getGoalsByDepartmentId(departmentId: number): Observable<GoalDto[]> {
+    return this.http.get<GoalDto[]>(`${this.apiUrl}/${departmentId}/goals`);
   }
 
   getMyDepartments(): Observable<DepartmentDto[]> {

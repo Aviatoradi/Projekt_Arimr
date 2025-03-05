@@ -14,7 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { ProgramsService } from '../services/programs.service';
+import { ProgramsService } from '../../services/programs.service';
 import { ProgramsFormComponent } from '../programs-form/programs-form.component';
 import { ProgramDto } from '../dtos';
 

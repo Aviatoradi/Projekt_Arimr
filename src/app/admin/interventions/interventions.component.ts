@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { InterventionService } from '../services/intervention.service';
+import { InterventionService } from '../../services/intervention.service';
 import { InterventionDto } from '../dtos';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { InterventionsFormComponent } from '../interventions-form/interventions-form.component';

@@ -45,7 +45,9 @@ export class AuthService {
     return this.repository.login(username, password).pipe(
       tap({
         next: ({ accessToken }) => {
-          this.cookieService.set('Auth-Token', accessToken);
+          this.cookieService.set('Auth-Token', accessToken, {
+            path: '/',
+          });
         },
       }),
       switchMap(() => {
@@ -61,7 +63,7 @@ export class AuthService {
   logout(): void {
     this.isAuthenticated$.next(false);
     this.user$.next(null);
-    this.cookieService.delete('Auth-Token');
+    this.cookieService.delete('Auth-Token', '/');
     this.router.navigate(['/login']);
   }
 }

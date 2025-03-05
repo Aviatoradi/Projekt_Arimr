@@ -2,8 +2,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CreateGoalDto, GoalDto, UpdateGoalDto } from '../dtos';
-import { API_URL } from '../../api/api-url.token';
+import { CreateGoalDto, GoalDto, UpdateGoalDto } from '../admin/dtos';
+import { API_URL } from '../api/api-url.token';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,7 @@ export class GoalsService {
   getAllGoals(): Observable<GoalDto[]> {
     return this.http.get<GoalDto[]>(this.apiUrl);
   }
+
 
   getGoalTemplates(): Observable<GoalDto[]> {
     return this.http.get<GoalDto[]>(`${this.apiUrl}/templates`);

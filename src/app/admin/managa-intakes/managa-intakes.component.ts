@@ -15,7 +15,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { InterventionService } from '../services/intervention.service';
+import { InterventionService } from '../../services/intervention.service';
 import { IntakeDto, InterventionDto } from '../dtos';
 import {
   FormBuilder,

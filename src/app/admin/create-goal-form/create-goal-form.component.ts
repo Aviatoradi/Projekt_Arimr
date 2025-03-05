@@ -23,8 +23,8 @@ import { MatInput } from '@angular/material/input';
 import { DepartmentDto, GoalDto } from '../dtos';
 import { forkJoin, of } from "rxjs";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { GoalsService } from '../services/goals.service';
-import { DepartmentsService } from '../services/departments.service';
+import { GoalsService } from '../../services/goals.service';
+import { DepartmentsService } from '../../services/departments.service';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { GoalTypeEnum } from '../goal-type.enum';
 import {

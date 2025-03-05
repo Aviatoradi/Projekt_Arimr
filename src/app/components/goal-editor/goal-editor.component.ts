@@ -15,7 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatListModule } from '@angular/material/list';
 import { ExportService } from '../../services/export.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DepartmentsComponent } from "../../departments/departments.component";
+import { DepartmentsComponent } from "../departments/departments.component";
 
 @Component({
   selector: 'app-goal-editor',

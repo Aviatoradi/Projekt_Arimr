@@ -24,7 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ProgramsService } from '../services/programs.service';
+import { ProgramsService } from '../../services/programs.service';
 import { CreateProgramDto, UpdateProgramDto } from '../dtos';
 import { toSignal } from '@angular/core/rxjs-interop';
 

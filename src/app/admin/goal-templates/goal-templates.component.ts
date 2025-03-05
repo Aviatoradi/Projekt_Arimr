@@ -26,7 +26,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { GoalsService } from '../services/goals.service';
+import { GoalsService } from '../../services/goals.service';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { CreateGoalFormComponent } from '../create-goal-form/create-goal-form.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';

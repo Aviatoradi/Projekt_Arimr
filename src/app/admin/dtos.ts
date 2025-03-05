@@ -90,8 +90,15 @@ export interface IntakeApplicationDto {
   editingUserId: number;
   intakeId: number;
   intake?: IntakeDto;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateIntakeApplicationDto {
+  intakeId: number;
+  applicationPrediction: number;
+  applicationCount: number;
+  departmentId: number;
 }
 
 // src/tasks/dto/task.dto.ts

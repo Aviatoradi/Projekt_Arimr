@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { DepartmentsComponent } from "../departments/departments.component";
+import { DepartmentsComponent } from "../components/departments/departments.component";
 
 @Component({
   selector: 'app-dashboard',
