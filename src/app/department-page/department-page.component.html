@@ -2,4 +2,10 @@
   Departament: {{ departmentDetails?.value().name }}
 </p>
 
-<app-goals-list [departmentId]="id()"></app-goals-list>
+<div class="mb-10">
+  <app-goals-list [departmentId]="id()"></app-goals-list>
+</div>
+
+<div>
+  <app-logistic-goals [departmentId]="id()"></app-logistic-goals>
+</div>

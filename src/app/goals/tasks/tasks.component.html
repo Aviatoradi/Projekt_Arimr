@@ -1,0 +1,66 @@
+<div class="task-container">
+  <div class="flex justify-between items-center mb-4">
+    <button 
+      mat-stroked-button 
+      color="primary" 
+      (click)="toggleTasksVisibility()"
+      [matBadge]="tasks().length" 
+      matBadgeColor="accent"
+      matBadgePosition="after"
+      matBadgeSize="small"
+      class="task-toggle-button"
+    >
+      <mat-icon class="mr-2">{{ showTasks() ? 'expand_less' : 'expand_more' }}</mat-icon>
+      {{ showTasks() ? 'Ukryj zadania' : 'Pokaż zadania' }}
+    </button>
+    
+    <button 
+      mat-mini-fab 
+      color="primary" 
+      matTooltip="Dodaj nowe zadanie"
+      (click)="openAddTaskDialog()"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  
+  <div *ngIf="showTasks()" class="tasks-panel">
+    <div *ngIf="loading()" class="flex justify-center my-4">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+    
+    <div *ngIf="error()" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+      <p>Wystąpił błąd podczas ładowania zadań. Spróbuj ponownie później.</p>
+    </div>
+    
+    <div *ngIf="!loading() && !error() && tasks().length === 0" class="text-center my-4 text-gray-500">
+      <p>Brak zadań do wyświetlenia</p>
+      <button mat-button color="primary" class="mt-2" (click)="openAddTaskDialog()">
+        <mat-icon class="mr-1">add</mat-icon>
+        Dodaj pierwsze zadanie
+      </button>
+    </div>
+    
+    <div *ngIf="!loading() && tasks().length > 0" class="tasks-list">
+      <mat-card *ngFor="let task of tasks()" class="task-card mb-3">
+        <mat-card-content class="flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-medium">{{ task.name }}</h3>
+            <p class="text-sm text-gray-500">Utworzono: {{ formatDate(task.createdAt) }}</p>
+            <p *ngIf="task.createdBy" class="text-xs text-gray-400">Utworzone przez: {{ task.createdBy.email }}</p>
+          </div>
+          
+          <button 
+            *ngIf="canDeleteTask(task)"
+            mat-icon-button 
+            color="warn" 
+            matTooltip="Usuń zadanie"
+            (click)="deleteTask(task.id)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

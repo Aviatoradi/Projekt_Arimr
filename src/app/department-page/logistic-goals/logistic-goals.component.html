@@ -1,6 +1,10 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Cele operacyjne</h1>
+    <h1 class="text-2xl font-bold text-gray-800">Cele logistyczne</h1>
+    <button mat-raised-button color="primary" (click)="openAddLogisticGoalDialog()">
+      <mat-icon class="mr-1">add</mat-icon>
+      Dodaj cel logistyczny
+    </button>
   </div>
 
   <div *ngIf="loading()" class="flex justify-center my-12">
@@ -8,22 +12,27 @@
   </div>
 
   <div *ngIf="error()" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-    <p>Wystąpił błąd podczas ładowania celów. Spróbuj ponownie później.</p>
+    <p>Wystąpił błąd podczas ładowania celów logistycznych. Spróbuj ponownie później.</p>
   </div>
 
-  <div *ngIf="!loading() && !error() && goals().length === 0" class="text-center my-12">
-    <p class="text-gray-500">Brak celów do wyświetlenia</p>
+  <div *ngIf="!loading() && !error() && logisticGoals().length === 0" class="text-center my-12">
+    <p class="text-gray-500">Brak celów logistycznych do wyświetlenia</p>
+    <button mat-stroked-button color="primary" class="mt-4" (click)="openAddLogisticGoalDialog()">
+      <mat-icon class="mr-1">add</mat-icon>
+      Dodaj pierwszy cel logistyczny
+    </button>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <mat-card *ngFor="let goal of goals()"
+    <mat-card *ngFor="let goal of logisticGoals()"
               class="hover:shadow-lg transition-shadow duration-300 cursor-pointer"
               (click)="navigateToGoalDetails(goal.id)">
       <mat-card-header>
         <mat-card-title class="text-lg font-medium text-gray-800">{{ goal.name }}</mat-card-title>
+        <mat-card-subtitle class="text-sm text-gray-600">Cel logistyczny</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content class="py-4">
-        <p class="text-gray-600">Typ: {{ goal.type }}</p>
+        <p class="text-gray-600">Miara: {{ goal.measure }}</p>
         <p *ngIf="goal.department" class="text-gray-600">
           Departament: {{ goal.department?.name }}
         </p>

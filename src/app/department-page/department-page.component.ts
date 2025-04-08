@@ -9,10 +9,11 @@ import {
 } from '@angular/core';
 import { DepartmentsRepository } from '../components/departments/departments.repository';
 import { GoalsListComponent } from "../users/goals-list/goals-list.component";
+import { LogisticGoalsComponent } from "./logistic-goals/logistic-goals.component";
 
 @Component({
   selector: 'app-department-page',
-  imports: [GoalsListComponent],
+  imports: [GoalsListComponent, LogisticGoalsComponent],
   templateUrl: './department-page.component.html',
   styleUrl: './department-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
