@@ -27,7 +27,7 @@ export interface CreateTaskDto {
 })
 export class TasksService {
   private http = inject(HttpClient);
-  private apiUrl = `${inject(API_URL)}/tasks`;
+  private apiUrl = `${inject(API_URL)}/api/tasks`;
 
   getTasksByGoalId(goalId: number): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/goal/${goalId}`);

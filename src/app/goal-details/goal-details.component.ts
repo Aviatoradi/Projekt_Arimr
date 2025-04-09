@@ -37,6 +37,8 @@ import { GoalsService } from '../services/goals.service';
 import { IntakeApplicationService } from '../services/intake-application.service';
 import { parseJSON } from 'date-fns/fp/parseJSON';
 import { MatTooltip } from '@angular/material/tooltip';
+import { TasksComponent } from "../goals/tasks/tasks.component";
+import { LogisticApplicationService, CreateLogisticApplicationDto, LogisticApplicationDto } from '../services/logistic-application.service';
 
 @Component({
   selector: 'app-goal-detail',
@@ -55,16 +57,17 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatInputModule,
     MatSnackBarModule,
     MatTooltip,
-  ],
+    TasksComponent
+],
   templateUrl: './goal-details.component.html',
 })
 export class GoalDetailsComponent implements OnInit {
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
   private goalService = inject(GoalsService);
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   private readonly intakeApplicationService = inject(IntakeApplicationService);
+  private readonly logisticApplicationService = inject(LogisticApplicationService);
 
   goalId = input.required({ transform: numberAttribute });
   departmentId = input.required({ transform: numberAttribute });
@@ -89,6 +92,10 @@ export class GoalDetailsComponent implements OnInit {
   applications = signal<IntakeApplicationDto[]>([]);
   currentApplication = signal<IntakeApplicationDto | null>(null);
   applicationSaving = signal<boolean>(false);
+  
+  // For logistic applications
+  logisticApplications = signal<LogisticApplicationDto[]>([]);
+  currentLogisticApplication = signal<LogisticApplicationDto | null>(null);
 
   isSelectedIntakePast = computed(() => {
     return this.selectedIntake() && this.isIntakePast(this.selectedIntake());
@@ -123,14 +130,35 @@ export class GoalDetailsComponent implements OnInit {
         this.goal.set(data);
         this.programs.set(data.programs);
         this.loading.set(false);
-
-        // this.loadPrograms(goalId());
+        
+        // If this is a logistic goal, load the logistic applications
+        if (data.type === 'logistic') {
+          this.loadLogisticApplications();
+        }
       },
       error: (err) => {
         console.error('Error loading goal details:', err);
         this.error.set(true);
         this.loading.set(false);
       },
+    });
+  }
+  
+  loadLogisticApplications(): void {
+    this.logisticApplicationService.getApplicationsByGoalId(this.departmentId(), this.goalId()).subscribe({
+      next: (applications) => {
+        this.logisticApplications.set(applications);
+        if (applications.length > 0) {
+          // Sort by creation date, newest first
+          const sortedApps = [...applications].sort((a, b) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          this.currentLogisticApplication.set(sortedApps[0]);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading logistic applications:', err);
+      }
     });
   }
   //
@@ -234,6 +262,12 @@ export class GoalDetailsComponent implements OnInit {
         this.goalService
           .getGoalById(this.goalId())
           .subscribe((goal: GoalDto) => {
+
+            if (goal.type === 'logistic') {
+              this.loadLogisticApplications();
+              return;
+            }
+
             const program = goal.programs.find(
               (p) => p.id === this.selectedProgram().id
             );
@@ -303,5 +337,63 @@ export class GoalDetailsComponent implements OnInit {
   editIntakeApplication() {
     this.isEditing.set(true);
     this.setApplicationFormValue(this.latestApplication());
+  }
+  
+  // Logistic application methods
+  createLogisticApplication() {
+    this.applicationForm.reset();
+    this.isEditing.set(true);
+  }
+  
+  editLogisticApplication() {
+    if (this.currentLogisticApplication()) {
+      this.isEditing.set(true);
+      this.applicationForm.setValue({
+        applicationPrediction: this.currentLogisticApplication()!.applicationPrediction,
+        applicationCount: this.currentLogisticApplication()!.applicationCount
+      });
+    }
+  }
+  
+  saveLogisticApplication() {
+    if (this.applicationForm.invalid) {
+      return;
+    }
+    
+    this.applicationSaving.set(true);
+    
+    const application: CreateLogisticApplicationDto = {
+      applicationPrediction: this.applicationForm.value.applicationPrediction,
+      applicationCount: this.applicationForm.value.applicationCount,
+      goalId: this.goalId()
+    };
+    
+    this.logisticApplicationService.createApplication(this.departmentId(), application).subscribe({
+      next: (data) => {
+        // Refresh the applications list
+        this.loadLogisticApplications();
+        this.applicationSaving.set(false);
+        this.isEditing.set(false);
+        
+        this.snackBar.open('Dane zostały zapisane pomyślnie', 'Zamknij', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+        });
+      },
+      error: (err) => {
+        console.error('Error saving logistic application:', err);
+        this.snackBar.open(
+          'Wystąpił błąd podczas zapisywania danych',
+          'Zamknij',
+          {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+          }
+        );
+        this.applicationSaving.set(false);
+      }
+    });
   }
 }
