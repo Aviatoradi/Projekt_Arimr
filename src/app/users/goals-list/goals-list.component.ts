@@ -49,17 +49,19 @@ export class GoalsListComponent {
     this.loading.set(true);
     this.error.set(false);
 
-    this.goalService.getGoalsByDepartmentId(this.departmentId()).subscribe({
-      next: (data) => {
-        this.goals.set(data);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading goals:', err);
-        this.error.set(true);
-        this.loading.set(false);
-      },
-    });
+    this.goalService
+      .getOperationalGoalsByDepartmentId(this.departmentId())
+      .subscribe({
+        next: (data) => {
+          this.goals.set(data);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          console.error('Error loading goals:', err);
+          this.error.set(true);
+          this.loading.set(false);
+        },
+      });
   }
 
   navigateToGoalDetails(goalId: number): void {

@@ -28,7 +28,6 @@ export class DepartmentPageComponent {
       id: this.id(),
     }),
     loader: ({ request }) => {
-      console.log(this.id());
       return this.departmentsRepository.getOneDepartment(request.id);
     },
   });

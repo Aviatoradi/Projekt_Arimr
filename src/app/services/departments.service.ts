@@ -16,8 +16,12 @@ export class DepartmentsService {
     return this.http.get<DepartmentDto[]>(`${this.apiUrl}/all`);
   }
 
-  getGoalsByDepartmentId(departmentId: number): Observable<GoalDto[]> {
-    return this.http.get<GoalDto[]>(`${this.apiUrl}/${departmentId}/goals`);
+  getOperationalGoalsByDepartmentId(
+    departmentId: number
+  ): Observable<GoalDto[]> {
+    return this.http.get<GoalDto[]>(
+      `${this.apiUrl}/${departmentId}/goals?type=operational`
+    );
   }
 
   getMyDepartments(): Observable<DepartmentDto[]> {
