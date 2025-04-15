@@ -23,7 +23,7 @@
         <mat-card-title class="text-lg font-medium text-gray-800">{{ goal.name }}</mat-card-title>
       </mat-card-header>
       <mat-card-content class="py-4">
-        <p class="text-gray-600">Typ: {{ goal.type }}</p>
+        <p class="text-gray-600">Cel {{ goal.type === 'operational' ? 'Operacyjny' : 'Logistyczny' }}</p>
         <p *ngIf="goal.department" class="text-gray-600">
           Departament: {{ goal.department?.name }}
         </p>

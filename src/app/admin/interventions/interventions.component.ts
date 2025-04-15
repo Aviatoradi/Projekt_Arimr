@@ -32,7 +32,7 @@ import { ManagaIntakesComponent } from '../managa-intakes/managa-intakes.compone
     MatDialogModule,
   ],
   templateUrl: './interventions.component.html',
-  styleUrls: ['./interventions.component.css'],
+  styleUrls: ['./interventions.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InterventionsComponent implements OnInit {

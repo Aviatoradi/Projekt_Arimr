@@ -31,7 +31,7 @@ import { Router } from '@angular/router';
     MatIconButton,
   ],
   standalone: true,
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   loginForm: FormGroup;
