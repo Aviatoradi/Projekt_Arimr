@@ -1,2 +1,14 @@
-<p class="text-xl font-bold mb-4 "> Wybierz departament </p>
-<app-departments> </app-departments>
+<div class="flex flex-col gap-4">
+  <p class="text-xl font-bold mb-4"> Wybierz departament </p>
+  
+  <div class="flex items-center gap-2">
+    <button mat-raised-button color="primary" (click)="downloadExcel()" [disabled]="isDownloading()">
+      <div class="flex items-center gap-2">
+        <mat-spinner *ngIf="isDownloading()" diameter="20" color="accent"></mat-spinner>
+        <span>Eksportuj do Excel</span>
+      </div>
+    </button>
+  </div>
+  
+  <app-departments></app-departments>
+</div>

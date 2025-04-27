@@ -37,7 +37,6 @@ export class CustomGoalComponent implements OnInit {
   
   ngOnInit(): void {
   this.selectedDepartment = this.dataService.selectedDepartment;
-  console.log('Wybrany departament:', this.selectedDepartment);
 }
 
   
